@@ -3,6 +3,5 @@
 
 	<string name="app_name">Whack-A-Toffel</string>
 	<string name="startGame">Spiel starten</string>
-	<string name="exit">Beenden</string>
 
 </resources>

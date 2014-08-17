@@ -13,7 +13,6 @@ import de.kolbenschurzgames.whack_a_toffel.app.game.GameActivity;
 public class MainActivity extends Activity {
 
 	private Button startGameButton;
-	private Button exitButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -21,8 +20,6 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		startGameButton = (Button) findViewById(R.id.button_start_game);
 		startGameButton.setOnClickListener(new OnStartButtonClickListener());
-		exitButton = (Button) findViewById(R.id.button_exit);
-		exitButton.setOnClickListener(new OnExitButtonClickListener());
 	}
 
 	@Override
@@ -38,9 +35,6 @@ public class MainActivity extends Activity {
 			case R.id.menu_item_start_game:
 				startNewGame();
 				return true;
-			case R.id.menu_item_exit:
-				finish();
-				return true;
 			default:
 				return super.onOptionsItemSelected(item);
 		}
@@ -55,13 +49,6 @@ public class MainActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 			startNewGame();
-		}
-	}
-
-	private class OnExitButtonClickListener implements View.OnClickListener {
-		@Override
-		public void onClick(View v) {
-			finish();
 		}
 	}
 }

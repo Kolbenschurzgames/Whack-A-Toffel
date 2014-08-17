@@ -3,7 +3,6 @@
 
 	<string name="app_name">Whack-A-Tato</string>
 	<string name="startGame">Start Game</string>
-	<string name="exit">Exit</string>
 
 	<!--Temp Placeholders -->
 	<string name="title_activity_game">GameActivity</string>

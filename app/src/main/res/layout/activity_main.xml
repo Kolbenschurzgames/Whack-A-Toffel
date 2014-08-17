@@ -20,11 +20,6 @@
 			android:layout_height="wrap_content"
 			android:text="@string/startGame"/>
 
-		<Button
-			android:id="@+id/button_exit"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/exit"/>
 	</LinearLayout>
 
 
