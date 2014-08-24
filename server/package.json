@@ -1,0 +1,29 @@
+{
+  "name": "whack-a-toffel",
+  "version": "0.1.0",
+  "description": "Whack-A-Toffel Backend",
+  "main": "src/main/index.js",
+  "scripts": {
+    "start": "DEBUG=toffel* node src/main/index.js",
+    "test": "DEBUG=toffel* mocha src/test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Kolbenschurzgames/Whack-A-Toffel.git"
+  },
+  "author": "Kolbenschurz Games",
+  "bugs": {
+    "url": "https://github.com/Kolbenschurzgames/Whack-A-Toffel/issues"
+  },
+  "homepage": "https://github.com/Kolbenschurzgames/Whack-A-Toffel",
+  "dependencies": {
+    "debug": "^1.0.4",
+    "mongoskin": "^1.4.4",
+    "q": "^1.0.1"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "mocha": "^1.21.4",
+    "sinon": "^1.10.3"
+  }
+}
