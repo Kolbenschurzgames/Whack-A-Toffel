@@ -1,3 +1,5 @@
+'use strict';
+
 var expect = require('chai').expect;
 var sinon = require('sinon');
 var Database = require('../main/database.js');
@@ -39,6 +41,7 @@ describe('database spec', function() {
             db = new Database(testDbName);
             expect(db).to.be.an.instanceOf(Database);
             expect(dbStub).to.have.been.calledOnce;
+            expect(dbStub.firstCall.args[0].indexOf('mongodb://')).to.equal(0);
             expect(dbStub.firstCall.args[0]).to.include(testDbName);
         });
 

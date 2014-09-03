@@ -1,15 +1,18 @@
 {
   "name": "whack-a-toffel",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Whack-A-Toffel Backend",
   "main": "src/main/index.js",
   "scripts": {
-    "start": "DEBUG=toffel* node src/main/index.js",
-    "test": "DEBUG=toffel* mocha src/test"
+    "start": "DEBUG=toffel* node --harmony src/main/index.js",
+    "test": "NODE_ENV=test DEBUG=toffel* mocha --harmony src/test"
+  },
+  "engines": {
+    "node": ">= 0.11.9"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:Kolbenschurzgames/Whack-A-Toffel.git"
+    "url": "https://github.com/Kolbenschurzgames/Whack-A-Toffel"
   },
   "author": "Kolbenschurz Games",
   "bugs": {
@@ -18,12 +21,17 @@
   "homepage": "https://github.com/Kolbenschurzgames/Whack-A-Toffel",
   "dependencies": {
     "debug": "^1.0.4",
+    "koa": "^0.10.0",
+    "koa-body": "^0.2.0",
+    "koa-router": "^3.2.3",
     "mongoskin": "^1.4.4",
     "q": "^1.0.1"
   },
   "devDependencies": {
     "chai": "^1.9.1",
     "mocha": "^1.21.4",
-    "sinon": "^1.10.3"
+    "proxyquire": "^1.0.1",
+    "sinon": "^1.10.3",
+    "supertest": "^0.13.0"
   }
 }

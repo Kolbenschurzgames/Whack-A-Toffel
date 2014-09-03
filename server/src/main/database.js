@@ -1,4 +1,6 @@
 module.exports = (function() {
+	'use strict'
+
 	var db;
 	var HIGHSCORES = 'highscores';
 
@@ -7,7 +9,7 @@ module.exports = (function() {
 
 	var Database = function(dbName) {
 		if (typeof dbName === 'string') {
-			db = require('mongoskin').db('localhost:27017/' + dbName);
+			db = require('mongoskin').db('mongodb://localhost:27017/' + dbName, {native_parser:true});
 		} else {
 			throw new Error('Database name parameter missing');
 		}
