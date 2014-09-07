@@ -6,3 +6,7 @@
 build/
 node_modules/
 npm-debug.log
+gen/
+gradle/caches
+gradle/daemon
+gradle/wrapper/dists
