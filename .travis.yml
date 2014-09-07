@@ -36,6 +36,4 @@ before_script:
 
 script:
     - ./gradlew build connectedCheck
-    - ./gradlew :server:npmInstall
-    - ./gradlew :server:npm_test
-    - NODE_ENV=test DEBUG=toffel* mocha --harmony src/test/integration
+    - ./run_node_tests.sh
