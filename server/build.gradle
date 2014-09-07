@@ -10,5 +10,16 @@ buildscript {
 apply plugin: 'node'
 
 node {
-    download = false
+    // Version of node to use.
+    version = '0.11.13'
+
+    // Base URL for fetching node distributions (change if you have a mirror).
+    distBaseUrl = 'http://nodejs.org/dist'
+
+    // If true, it will download node using above parameters.
+    // If false, it will try to use globally installed node.
+    download = true
+
+    // Set the work directory for unpacking node
+    workDir = file("${project.buildDir}/nodejs")
 }
