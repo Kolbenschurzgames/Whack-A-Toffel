@@ -4,6 +4,8 @@ env:
   matrix:
     - ANDROID_TARGET=android-18 ANDROID_ABI=armeabi-v7a
 
+services: mongodb
+
 android:
   components:
     # Uncomment the lines below if you want to
@@ -36,3 +38,4 @@ script:
     - ./gradlew build connectedCheck
     - ./gradlew :server:npmInstall
     - ./gradlew :server:npm_test
+    - NODE_ENV=test DEBUG=toffel* mocha --harmony src/test/integration

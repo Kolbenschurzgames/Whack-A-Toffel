@@ -39,7 +39,7 @@ public class MainActivityUnitTest extends ActivityUnitTestCase<MainActivity> {
 		startButton.performClick();
 
 		final Intent startGameIntent = getStartedActivityIntent();
-		assertNull("Intent was null", startGameIntent);
+		assertNotNull("Intent was null", startGameIntent);
 		assertEquals(GameActivity.class.getCanonicalName(), startGameIntent.getComponent().getClassName());
 		assertFalse(isFinishCalled());
 	}
