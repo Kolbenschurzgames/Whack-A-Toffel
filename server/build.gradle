@@ -23,3 +23,9 @@ node {
     // Set the work directory for unpacking node
     workDir = file("${project.buildDir}/nodejs")
 }
+
+task integration(type: NodeTask) {
+    script = file('node_modules/mocha/bin/mocha')
+    args = ['--harmony', 'src/test/integration']
+    environment = ['NODE_ENV': 'test', 'DEBUG': 'toffel*']
+}

@@ -50,7 +50,7 @@ if (process.env.NODE_ENV === 'test') {
                         request.post(route)
                         .set('Content-Type', 'application/json')
                         .send(validHighscore)
-                        .expect(200, function(err, result) {
+                        .expect(400, function(err, result) {
                             var body;
                             expect(err).to.not.exist;
                             expect(result).to.exist;
