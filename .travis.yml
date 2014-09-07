@@ -36,4 +36,4 @@ before_script:
 
 script:
     - ./gradlew build connectedCheck
-    - ./run_node_tests.sh
+    - ./run_server_tests.sh
