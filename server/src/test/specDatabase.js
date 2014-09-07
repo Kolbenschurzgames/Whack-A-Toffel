@@ -10,8 +10,12 @@ var db;
 describe('database spec', function() {
     var dbStub,
         insertStub = sinon.stub(),
+        findToArrayStub = sinon.stub(),
         mockCollection = {
-            insert: insertStub
+            insert: insertStub,
+            find: function() {
+                return { toArray: findToArrayStub };
+            }
         },
         collectionStub = sinon.stub().returns(mockCollection);
 
@@ -97,7 +101,7 @@ describe('database spec', function() {
             });
 
             it('should return a rejected promise containing the error message', function(done) {
-                var promise = db.saveHighscore(highscore).fail(function(err) {
+                db.saveHighscore(highscore).fail(function(err) {
                     expect(err).to.be.an.instanceof(Error);
                     expect(err.message).to.equal(error);
                     done();
@@ -106,6 +110,52 @@ describe('database spec', function() {
 
             after(function() {
                 insertStub.reset();
+            });
+        });
+    });
+
+    describe('retrieving all highscores', function() {
+        describe('succeeds', function() {
+            var highscoresResult;
+
+            before(function() {
+                highscoresResult = [
+                    { name: 'test', score: 1000 },
+                    { name: 'test2', score: 2000 }
+                ];
+                findToArrayStub.yields(null, highscoresResult);
+            });
+
+            it('should return a promise containing the result of the database operation', function(done) {
+                db.getHighscores().then(function(val) {
+                    expect(val).to.equal(highscoresResult);
+                    done();
+                });
+            });
+
+            after(function() {
+                findToArrayStub.reset();
+            });
+        });
+
+        describe('fails', function() {
+            var error;
+
+            before(function() {
+                error = 'failure';
+                findToArrayStub.yields(error);
+            });
+
+            it('should return a rejected promise containing the error message', function(done) {
+                db.getHighscores().fail(function(err) {
+                    expect(err).to.be.an.instanceof(Error);
+                    expect(err.message).to.equal(error);
+                    done();
+                });
+            });
+
+            after(function() {
+                findToArrayStub.reset();
             });
         });
     });

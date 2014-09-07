@@ -3,6 +3,7 @@
 var expect = require('chai').expect;
 var sinon = require('sinon');
 var proxyquire = require('proxyquire');
+var Q = require('q');
 var request = require('supertest')('http://localhost:3000');
 var Database = require('../main/database.js');
 var validator = require('../main/validator.js');
@@ -91,6 +92,60 @@ describe('server spec', function() {
 
                 it('should not pass any data to the database module', function() {
                     expect(dbMock.saveHighscore).not.to.have.been.called;
+                });
+            });
+        });
+
+        describe('GET', function() {
+            describe('successfully fetched data from database', function() {
+                var dbResult;
+
+                before(function() {
+                    dbResult = [
+                        { name: 'test', score: 1000 },
+                        { name: 'test2', score: 2000 }
+                    ];
+
+                    dbMock.getHighscores.returns(dbResult);
+                });
+
+                after(function() {
+                    dbMock.getHighscores.reset();
+                });
+
+                it('should return status code 200 and the database result in the response body', function(done) {
+                    request.get(route)
+                        .expect(200, dbResult, done);
+                });
+
+                it('should retrieve the highscores from the database module', function() {
+                    expect(dbMock.getHighscores).to.have.been.calledOnce;
+                    expect(dbMock.getHighscores.firstCall.args).to.be.empty;
+                });
+            });
+
+            describe('error while fetching data from database', function() {
+                var rejectedPromise;
+
+                before(function() {
+                    rejectedPromise = Q.fcall(function() {
+                        throw new Error('Can\'t do it');
+                    });
+                    dbMock.getHighscores.returns(rejectedPromise);
+                });
+
+                after(function() {
+                    dbMock.getHighscores.reset();
+                });
+
+                it('should return status code 500 and the error message in the response body', function(done) {
+                    request.get(route)
+                        .expect(500, done);
+                });
+
+                it('should have tried to retrieve the highscores from the database module', function() {
+                    expect(dbMock.getHighscores).to.have.been.calledOnce;
+                    expect(dbMock.getHighscores.firstCall.args).to.be.empty;
                 });
             });
         });
