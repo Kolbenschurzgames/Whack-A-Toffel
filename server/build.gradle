@@ -1,12 +1,14 @@
-apply plugin: 'java'
-
-sourceCompatibility = 1.5
-version = '1.0'
-
-repositories {
-    mavenCentral()
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.moowork.gradle:gradle-node-plugin:0.5'
+    }
 }
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+apply plugin: 'node'
+
+node {
+    download = false
 }
