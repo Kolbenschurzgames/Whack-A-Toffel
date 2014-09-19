@@ -1,5 +1,5 @@
 module.exports = (function() {
-    'use strict'
+    'use strict';
 
     var debug = require('debug')('toffel:server');
     var validator = require('./validator.js');
@@ -17,6 +17,10 @@ module.exports = (function() {
     var serverHost = '127.0.0.1';
 
     app.use(router(app));
+
+	app.get('/highscore', function *() {
+		this.body = yield db.getHighscores();
+	});
 
     app.post('/highscore', koaBody, function *() {
         var highscore = this.request.body;

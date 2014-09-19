@@ -8,19 +8,15 @@ if (process.env.NODE_ENV === 'test') {
     var request = require('supertest')('http://localhost:3000');
     var db;
 
-    var emptyCollection = function(collectionName) {
-        db.collection(collectionName).remove({}, function(err){
-            if (err) {
-                console.error(err);
-            }
-        });
+    var emptyCollection = function(collectionName, callback) {
+        db.collection(collectionName).remove({}, callback);
     };
 
     describe('integration test suite', function() {
         var route, collection;
 
         before(function() {
-            db = require('mongoskin').db('mongodb://localhost:27017/toffelTest', {native_parser:true});
+            db = require('mongoskin').db('mongodb://localhost:27017/toffelTest', {native_parser: true});
             require('../../main/server.js');
         });
 
@@ -30,8 +26,8 @@ if (process.env.NODE_ENV === 'test') {
                 collection = 'highscores';
             });
 
-            after(function() {
-                emptyCollection(collection);
+            after(function(done) {
+                emptyCollection(collection, done);
             });
 
             describe('POST', function() {
@@ -72,7 +68,7 @@ if (process.env.NODE_ENV === 'test') {
                             expect(result[0]).to.have.property('name').that.equals(validHighscore.name);
                             expect(result[0]).to.have.property('score').that.equals(validHighscore.score);
                             expect(result[0]).to.have.property('timestamp').that.equals(validHighscore.timestamp);
-                            done();
+                            done(err, result);
                         });
                     });
                 });
@@ -80,8 +76,8 @@ if (process.env.NODE_ENV === 'test') {
                 describe('invalid data', function() {
                     var invalidData;
 
-                    before(function() {
-                        emptyCollection(collection);
+                    before(function(done) {
+                        emptyCollection(collection, done);
 
                         invalidData = {
                             name: 'name',
@@ -100,8 +96,57 @@ if (process.env.NODE_ENV === 'test') {
                     it('should not store the invalid data in the database', function(done) {
                         db.collection(collection).find().toArray(function(err, result) {
                             expect(err).to.not.exist;
+                            expect(result).to.be.instanceof(Array);
                             expect(result).to.be.empty;
-                            done();
+                            done(err, result);
+                        });
+                    });
+                });
+            });
+
+            describe('GET', function() {
+
+                describe('empty highscores collection', function() {
+                    it('should return status code 200 and an empty array in the response body', function(done) {
+                        var emptyArray = [];
+                        request.get(route)
+                        .expect(200, emptyArray, done);
+                    });
+                });
+
+                describe('results from database', function() {
+                    var highscores;
+
+                    before(function(done) {
+                        highscores = [
+                            { name: 'test', score: 1000, timestamp: new Date().getTime() },
+                            { name: 'test2', score: 2000, timestamp: new Date().getTime() }
+                        ];
+                        db.collection(collection).insert(highscores, done);
+                    });
+
+                    after(function(done) {
+                        db.collection(collection).remove({}, done);
+                    });
+
+                    it('should return status code 200 and the database result in the response body', function(done) {
+                        request.get(route)
+                        .expect(200, function(err, result) {
+                            var i, body,
+                                body = result.body,
+                                numHighscores = highscores.length;
+
+                            expect(err).to.not.exist;
+                            expect(body).to.be.instanceof(Array);
+
+                            for (i = 0; i < numHighscores; i++) {
+                                expect(body[i]).to.have.property('name').that.equals(highscores[i].name);
+                                expect(body[i]).to.have.property('score').that.equals(highscores[i].score);
+                                expect(body[i]).to.have.property('timestamp').that.equals(highscores[i].timestamp);
+                                expect(body[i]).to.have.property('_id');
+                            }
+
+                            done(err, result);
                         });
                     });
                 });
