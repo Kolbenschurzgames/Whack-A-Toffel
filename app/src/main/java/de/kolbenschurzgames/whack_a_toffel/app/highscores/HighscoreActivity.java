@@ -2,20 +2,17 @@ package de.kolbenschurzgames.whack_a_toffel.app.highscores;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import de.kolbenschurzgames.whack_a_toffel.app.R;
 import de.kolbenschurzgames.whack_a_toffel.app.model.Highscore;
 import de.kolbenschurzgames.whack_a_toffel.app.network.NetworkUtils;
-import de.kolbenschurzgames.whack_a_toffel.app.network.RequestQueueSingleton;
-import org.json.JSONArray;
-import org.json.JSONException;
+import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceCallback;
+import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceHelper;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -24,14 +21,14 @@ import java.util.List;
 /**
  * Created by alfriedl on 19.09.14.
  */
-public class HighscoreActivity extends Activity {
-
-	private final String HIGHSCORES_URL = "http://10.0.2.2:3000/highscore";
+public class HighscoreActivity extends Activity implements WebServiceCallback<Highscore> {
 
 	private TextView textView;
 	private TableLayout highscoresTable;
 
 	private LayoutInflater inflater;
+
+	private WebServiceHelper webServiceHelper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,37 +40,26 @@ public class HighscoreActivity extends Activity {
 
 		inflater = getLayoutInflater();
 
+		webServiceHelper = new WebServiceHelper(this);
+
 		if (NetworkUtils.isConnectionAvailable(this)) {
-			fetchHighscores();
+			webServiceHelper.getListOfHighscores(this);
 		} else {
 			textView.setText(getString(R.string.no_connection));
 		}
 	}
 
-	private void fetchHighscores() {
-		JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(HIGHSCORES_URL,
-				new Response.Listener<JSONArray>() {
-					@Override
-					public void onResponse(JSONArray response) {
-						textView.setVisibility(View.INVISIBLE);
-						highscoresTable.setVisibility(View.VISIBLE);
-						try {
-							List<Highscore> highscores = Highscore.parseJsonArrayToList(response);
-							displayHighscores(highscores);
-						} catch (JSONException e) {
-							displayError();
-						}
-					}
-				},
+	@Override
+	public void onResultListReceived(List<Highscore> highscores) {
+		textView.setVisibility(View.INVISIBLE);
+		highscoresTable.setVisibility(View.VISIBLE);
+		displayHighscores(highscores);
+	}
 
-				new Response.ErrorListener() {
-					@Override
-					public void onErrorResponse(VolleyError error) {
-						displayError();
-					}
-				});
-
-		RequestQueueSingleton.getInstance(this).addToRequestQueue(jsonArrayRequest);
+	@Override
+	public void onError(Error e) {
+		Log.e("Highscores", e.getMessage(), e);
+		displayError();
 	}
 
 	private void displayHighscores(List<Highscore> highscores) {
@@ -88,11 +74,11 @@ public class HighscoreActivity extends Activity {
 		TableRow row = (TableRow) inflater.inflate(R.layout.table_row_highscore, null);
 		((TextView) row.getChildAt(0)).setText(highscore.getName());
 		((TextView) row.getChildAt(1)).setText(Integer.toString(highscore.getScore()));
-		((TextView) row.getChildAt(2)).setText(getLocalizedDateString(highscore.getDate()));
+		((TextView) row.getChildAt(2)).setText(buildLocalizedDateTimeString(highscore.getDate()));
 		return row;
 	}
 
-	private String getLocalizedDateString(Date date) {
+	private String buildLocalizedDateTimeString(Date date) {
 		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this);
 		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(this);
 		String dateString = dateFormat.format(date);

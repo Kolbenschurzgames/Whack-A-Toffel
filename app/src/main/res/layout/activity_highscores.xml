@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			  android:orientation="vertical"
 			  android:layout_width="match_parent"
-			  android:layout_height="match_parent">
+			  android:layout_height="match_parent"
+			  android:orientation="vertical">
 
 	<TextView
+		android:id="@+id/highscores_text_view"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="@string/loading_highscores"
-		android:id="@+id/highscores_text_view"/>
+		android:text="@string/loading_highscores"/>
 
 	<TableLayout
+		android:id="@+id/highscores_table"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:id="@+id/highscores_table"
 		android:visibility="invisible">
 
-		<include layout="@layout/table_row_highscore" />
+		<include layout="@layout/table_row_highscore"/>
 
 	</TableLayout>
 </LinearLayout>
