@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="de.kolbenschurzgames.whack_a_toffel.app"
-		  xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest
+	package="de.kolbenschurzgames.whack_a_toffel.app"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
 	<application
 		android:allowBackup="true"
 		android:icon="@drawable/ic_launcher"
@@ -26,6 +31,11 @@
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value="de.kolbenschurzgames.whack_a_toffel.app.MainActivity"/>
+		</activity>
+
+		<activity
+			android:name="de.kolbenschurzgames.whack_a_toffel.app.highscores.HighscoreActivity"
+			android:label="@string/title_activity_highscores">
 		</activity>
 	</application>
 

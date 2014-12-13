@@ -7,6 +7,7 @@ import android.widget.Button;
 import de.kolbenschurzgames.whack_a_toffel.app.MainActivity;
 import de.kolbenschurzgames.whack_a_toffel.app.R;
 import de.kolbenschurzgames.whack_a_toffel.app.game.GameActivity;
+import de.kolbenschurzgames.whack_a_toffel.app.highscores.HighscoreActivity;
 
 /**
  * Created by alfriedl on 17.08.14.
@@ -14,8 +15,9 @@ import de.kolbenschurzgames.whack_a_toffel.app.game.GameActivity;
 public class MainActivityUnitTest extends ActivityUnitTestCase<MainActivity> {
 
 	private MainActivity mainActivity;
+
 	private Button startButton;
-	private Intent launchIntent;
+	private Button highscoresButton;
 
 	public MainActivityUnitTest() {
 		this(MainActivity.class);
@@ -28,10 +30,13 @@ public class MainActivityUnitTest extends ActivityUnitTestCase<MainActivity> {
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-		launchIntent = new Intent(getInstrumentation().getTargetContext(), MainActivity.class);
-		startActivity(launchIntent, null, null);
+
+		Intent mainMenuIntent = new Intent(getInstrumentation().getTargetContext(), MainActivity.class);
+		startActivity(mainMenuIntent, null, null);
 		mainActivity = getActivity();
+
 		startButton = (Button) mainActivity.findViewById(R.id.button_start_game);
+		highscoresButton = (Button) mainActivity.findViewById(R.id.button_highscores);
 	}
 
 	@SmallTest
@@ -39,8 +44,18 @@ public class MainActivityUnitTest extends ActivityUnitTestCase<MainActivity> {
 		startButton.performClick();
 
 		final Intent startGameIntent = getStartedActivityIntent();
-		assertNotNull("Intent was null", startGameIntent);
+		assertNotNull("StartGame Intent was null", startGameIntent);
 		assertEquals(GameActivity.class.getCanonicalName(), startGameIntent.getComponent().getClassName());
+		assertFalse(isFinishCalled());
+	}
+
+	@SmallTest
+	public void testHighscoresButtonLaunchesHighscoresActivityWithIntent() {
+		highscoresButton.performClick();
+
+		final Intent highscoresIntent = getStartedActivityIntent();
+		assertNotNull("Highscores intent was null", highscoresIntent);
+		assertEquals(HighscoreActivity.class.getCanonicalName(), highscoresIntent.getComponent().getClassName());
 		assertFalse(isFinishCalled());
 	}
 }
