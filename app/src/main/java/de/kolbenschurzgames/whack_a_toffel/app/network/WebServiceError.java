@@ -1,7 +1,5 @@
 package de.kolbenschurzgames.whack_a_toffel.app.network;
 
-import org.json.JSONException;
-
 /**
  * Created by alfriedl on 08.11.14.
  */

@@ -1,7 +1,6 @@
 package de.kolbenschurzgames.whack_a_toffel.app.highscores;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,10 @@ import de.kolbenschurzgames.whack_a_toffel.app.model.Highscore;
 import de.kolbenschurzgames.whack_a_toffel.app.network.NetworkUtils;
 import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceCallback;
 import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceHelper;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -21,26 +24,23 @@ import java.util.List;
 /**
  * Created by alfriedl on 19.09.14.
  */
+@EActivity(R.layout.activity_highscores)
 public class HighscoreActivity extends Activity implements WebServiceCallback<Highscore> {
-
-	private TextView textView;
-	private TableLayout highscoresTable;
 
 	private LayoutInflater inflater;
 
-	private WebServiceHelper webServiceHelper;
+	@ViewById(R.id.highscores_text_view)
+	protected TextView textView;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_highscores);
+	@ViewById(R.id.highscores_table)
+	protected TableLayout highscoresTable;
 
-		textView = (TextView) findViewById(R.id.highscores_text_view);
-		highscoresTable = (TableLayout) findViewById(R.id.highscores_table);
+	@Bean
+	protected WebServiceHelper webServiceHelper;
 
+	@AfterViews
+	protected void init() {
 		inflater = getLayoutInflater();
-
-		webServiceHelper = new WebServiceHelper(this);
 
 		if (NetworkUtils.isConnectionAvailable(this)) {
 			webServiceHelper.getListOfHighscores(this);
@@ -62,6 +62,13 @@ public class HighscoreActivity extends Activity implements WebServiceCallback<Hi
 		displayError();
 	}
 
+	private void displayError() {
+		String errorMsg = getString(R.string.load_highscores_error);
+		highscoresTable.setVisibility(View.INVISIBLE);
+		textView.setText(errorMsg);
+		textView.setVisibility(View.VISIBLE);
+	}
+
 	private void displayHighscores(List<Highscore> highscores) {
 		for (int i = 0; i < highscores.size(); i++) {
 			Highscore highscore = highscores.get(i);
@@ -78,18 +85,11 @@ public class HighscoreActivity extends Activity implements WebServiceCallback<Hi
 		return row;
 	}
 
-	private String buildLocalizedDateTimeString(Date date) {
+	String buildLocalizedDateTimeString(Date date) {
 		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this);
 		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(this);
 		String dateString = dateFormat.format(date);
 		String timeString = timeFormat.format(date);
 		return dateString + " " + timeString;
-	}
-
-	private void displayError() {
-		String errorMsg = getString(R.string.load_highscores_error);
-		highscoresTable.setVisibility(View.INVISIBLE);
-		textView.setText(errorMsg);
-		textView.setVisibility(View.VISIBLE);
 	}
 }
