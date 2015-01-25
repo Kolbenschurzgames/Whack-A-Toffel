@@ -13,7 +13,7 @@
 		android:theme="@style/AppTheme">
 
 		<activity
-			android:name="de.kolbenschurzgames.whack_a_toffel.app.MainActivity"
+			android:name="de.kolbenschurzgames.whack_a_toffel.app.MainActivity_"
 			android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
@@ -26,15 +26,15 @@
 			android:name="de.kolbenschurzgames.whack_a_toffel.app.game.GameActivity"
 			android:configChanges="orientation|keyboardHidden|screenSize"
 			android:label="@string/title_activity_game"
-			android:parentActivityName="de.kolbenschurzgames.whack_a_toffel.app.MainActivity"
+			android:parentActivityName="de.kolbenschurzgames.whack_a_toffel.app.MainActivity_"
 			android:theme="@style/FullscreenTheme">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value="de.kolbenschurzgames.whack_a_toffel.app.MainActivity"/>
+				android:value="de.kolbenschurzgames.whack_a_toffel.app.MainActivity_"/>
 		</activity>
 
 		<activity
-			android:name="de.kolbenschurzgames.whack_a_toffel.app.highscores.HighscoreActivity"
+			android:name="de.kolbenschurzgames.whack_a_toffel.app.highscores.HighscoreActivity_"
 			android:label="@string/title_activity_highscores">
 		</activity>
 	</application>

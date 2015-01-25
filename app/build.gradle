@@ -3,47 +3,125 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.14.2'
+        classpath 'com.android.tools.build:gradle:0.14.4'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+        classpath 'org.robolectric:robolectric-gradle-plugin:0.13.2'
     }
 }
 
-apply plugin: 'android'
+apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
+apply plugin: 'robolectric'
+
+def AAVersion = '3.2'
+
+dependencies {
+    apt "org.androidannotations:androidannotations:$AAVersion"
+    compile "org.androidannotations:androidannotations-api:$AAVersion"
+}
 
 repositories {
     mavenCentral()
+    mavenLocal()
+}
+
+apt {
+    arguments {
+        androidManifestFile variant.outputs[0].processResources.manifestFile
+        // if you have multiple outputs (when using splits), you may want to have other index than 0
+
+        resourcePackageName 'de.kolbenschurzgames.whack_a_toffel.app'
+
+        // You can set optional annotation processing options here, like these commented options:
+        // logLevel 'INFO'
+        // logFile '/var/log/aa.log'
+    }
 }
 
 android {
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+    }
+
     compileSdkVersion 19
     buildToolsVersion "19.1"
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 19
+        targetSdkVersion 18
         versionCode 1
         versionName "0.1"
+        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
     }
+
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+
     lintOptions {
         abortOnError false
     }
 }
 
+robolectric {
+    include '**/*Test.class'
+}
+
+def PowerMockVersion = '1.5.5'
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     // You must install or update the Support Repository through the SDK manager to use this dependency.
-    compile 'com.android.support:support-v4:20.+'
-    compile 'com.mcxiaoke.volley:library:1.+'
+    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.mcxiaoke.volley:library:1.0.10'
 
-    androidTestCompile 'org.mockito:mockito-core:1.9.5'
-    androidTestCompile 'com.google.dexmaker:dexmaker:1.+'
-    androidTestCompile ('com.google.dexmaker:dexmaker-mockito:1.+') {
-        exclude group: 'org.mockito'
+    androidTestCompile "org.mockito:mockito-core:1.9.5"
+
+    androidTestCompile "org.powermock:powermock-module-junit4:$PowerMockVersion"
+    androidTestCompile "org.powermock:powermock-module-junit4-rule:$PowerMockVersion"
+    androidTestCompile ("org.powermock:powermock-api-mockito:$PowerMockVersion"){
+        exclude group: "org.mockito"
+    }
+    androidTestCompile ("org.powermock:powermock-classloading-xstream:$PowerMockVersion") {
+        exclude module: "xmlpull"
+        exclude module: "xpp3_min"
+    }
+
+    androidTestCompile('junit:junit:4.11') {
+        exclude module: 'hamcrest-core'
+    }
+
+    androidTestCompile('org.robolectric:robolectric:2.4') {
+        exclude module: 'classworlds'
+        exclude module: 'commons-logging'
+        exclude module: 'httpclient'
+        exclude module: 'maven-artifact'
+        exclude module: 'maven-artifact-manager'
+        exclude module: 'maven-error-diagnostics'
+        exclude module: 'maven-model'
+        exclude module: 'maven-project'
+        exclude module: 'maven-settings'
+        exclude module: 'plexus-container-default'
+        exclude module: 'plexus-interpolation'
+        exclude module: 'plexus-utils'
+        exclude module: 'wagon-file'
+        exclude module: 'wagon-http-lightweight'
+        exclude module: 'wagon-provider-api'
+    }
+}
+
+apply plugin: 'idea'
+
+idea {
+    module {
+        testOutputDir = file('build/test-classes/debug')
     }
 }
