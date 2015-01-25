@@ -3,7 +3,7 @@ package de.kolbenschurzgames.whack_a_toffel.app.game;
 import android.graphics.Canvas;
 
 public class GameLoopThread extends Thread {
-    static final long FPS = 10;
+    private static final long FPS = 10;
     private GameView view;
     private boolean isRunning = false;
 

@@ -4,6 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ToffelManager {
 
     private Bitmap toffel;
@@ -28,8 +31,7 @@ public class ToffelManager {
 
     private final static int NUMBER_OF_TOFFELS = 9;
 
-    private Toffel[] toffelSack = new Toffel[NUMBER_OF_TOFFELS];
-    private Point[] toffelField = new Point[NUMBER_OF_TOFFELS];
+    private Map<ToffelField, Toffel> toffelSack = new HashMap<ToffelField, Toffel>(NUMBER_OF_TOFFELS);
 
     public ToffelManager(Bitmap toffel, Bitmap hole) {
         this.toffel = toffel;
@@ -49,24 +51,19 @@ public class ToffelManager {
     }
 
     public void plantToffels() {
-        toffelField[ToffelField.FIELD_TOP_LEFT.ordinal()] = new Point(offset, padding_top + offset);
-        toffelField[ToffelField.FIELD_TOP_MIDDLE.ordinal()] = new Point(edge_length + offset, padding_top + offset);
-        toffelField[ToffelField.FIELD_TOP_RIGHT.ordinal()] = new Point((2 * edge_length) + offset, padding_top + offset);
-        toffelField[ToffelField.FIELD_MIDDLE_LEFT.ordinal()] = new Point(offset, padding_top + edge_length + offset);
-        toffelField[ToffelField.FIELD_MIDDLE_MIDDLE.ordinal()] = new Point(edge_length + offset, padding_top + edge_length + offset);
-        toffelField[ToffelField.FILED_MIDDLE_RIGHT.ordinal()] = new Point((2 * edge_length) + offset, padding_top + edge_length + offset);
-        toffelField[ToffelField.FIELD_BOTTOM_LEFT.ordinal()] = new Point(offset, padding_top + (2 * edge_length) + offset);
-        toffelField[ToffelField.FIELD_BOTTOM_MIDDLE.ordinal()] = new Point(edge_length + offset, padding_top + (2 * edge_length) + offset);
-        toffelField[ToffelField.FIELD_BOTTOM_RIGHT.ordinal()] = new Point((2 * edge_length) + offset, padding_top + (2 * edge_length) + offset);
-
-        for (int i = 0; i < NUMBER_OF_TOFFELS; i++) {
-            toffelSack[i] = new Toffel(this.scaledToffel, this.scaledHole, toffelField[i]);
-        }
+        toffelSack.put(ToffelField.FIELD_TOP_LEFT, new Toffel(this.scaledToffel, this.scaledHole, new Point(offset, padding_top + offset)));
+        toffelSack.put(ToffelField.FIELD_TOP_MIDDLE, new Toffel(this.scaledToffel, this.scaledHole, new Point(edge_length + offset, padding_top + offset)));
+        toffelSack.put(ToffelField.FIELD_TOP_RIGHT, new Toffel(this.scaledToffel, this.scaledHole, new Point((2 * edge_length) + offset, padding_top + offset)));
+        toffelSack.put(ToffelField.FIELD_MIDDLE_LEFT, new Toffel(this.scaledToffel, this.scaledHole, new Point(offset, padding_top + edge_length + offset)));
+        toffelSack.put(ToffelField.FIELD_MIDDLE_MIDDLE, new Toffel(this.scaledToffel, this.scaledHole, new Point(edge_length + offset, padding_top + edge_length + offset)));
+        toffelSack.put(ToffelField.FILED_MIDDLE_RIGHT, new Toffel(this.scaledToffel, this.scaledHole, new Point((2 * edge_length) + offset, padding_top + edge_length + offset)));
+        toffelSack.put(ToffelField.FIELD_BOTTOM_LEFT, new Toffel(this.scaledToffel, this.scaledHole, new Point(offset, padding_top + (2 * edge_length) + offset)));
+        toffelSack.put(ToffelField.FIELD_BOTTOM_MIDDLE, new Toffel(this.scaledToffel, this.scaledHole, new Point(edge_length + offset, padding_top + (2 * edge_length) + offset)));
+        toffelSack.put(ToffelField.FIELD_BOTTOM_RIGHT, new Toffel(this.scaledToffel, this.scaledHole, new Point((2 * edge_length) + offset, padding_top + (2 * edge_length) + offset)));
     }
 
     public void updateToffels(Canvas canvas) {
-        for (int i = 0; i < NUMBER_OF_TOFFELS; i++) {
-            Toffel toffel = toffelSack[i];
+        for (Toffel toffel : toffelSack.values()) {
             toffel.updateToffel(canvas);
         }
     }
