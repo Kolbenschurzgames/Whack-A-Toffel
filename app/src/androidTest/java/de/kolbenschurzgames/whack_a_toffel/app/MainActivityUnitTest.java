@@ -1,13 +1,8 @@
 package de.kolbenschurzgames.whack_a_toffel.app;
 
 import android.content.Intent;
-import android.test.ActivityUnitTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
 import android.widget.Button;
-import de.kolbenschurzgames.whack_a_toffel.app.MainActivity;
-import de.kolbenschurzgames.whack_a_toffel.app.R;
-import de.kolbenschurzgames.whack_a_toffel.app.game.GameActivity;
-import de.kolbenschurzgames.whack_a_toffel.app.highscores.HighscoreActivity;
+import de.kolbenschurzgames.whack_a_toffel.app.game.GameActivity_;
 import de.kolbenschurzgames.whack_a_toffel.app.highscores.HighscoreActivity_;
 import junit.framework.Assert;
 import org.junit.Before;
@@ -15,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
-import static org.junit.Assert.assertThat;
 import static org.robolectric.Robolectric.setupActivity;
 import static org.robolectric.Robolectric.shadowOf;
 
@@ -41,7 +35,7 @@ public class MainActivityUnitTest {
 	public void testStartButtonLaunchesGameActivityWithIntent() {
 		startButton.performClick();
 
-		Intent expectedIntent = new Intent(mainActivity, GameActivity.class);
+		Intent expectedIntent = new Intent(mainActivity, GameActivity_.class);
 		Assert.assertEquals(expectedIntent, shadowOf(mainActivity).getNextStartedActivity());
 	}
 
