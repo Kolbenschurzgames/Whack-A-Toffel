@@ -7,7 +7,7 @@ import android.graphics.Point;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ToffelManager {
+class ToffelManager {
 
     private Bitmap toffel;
     private Bitmap scaledToffel;
@@ -33,12 +33,12 @@ public class ToffelManager {
 
     private Map<ToffelField, Toffel> toffelSack = new HashMap<ToffelField, Toffel>(NUMBER_OF_TOFFELS);
 
-    public ToffelManager(Bitmap toffel, Bitmap hole) {
+    ToffelManager(Bitmap toffel, Bitmap hole) {
         this.toffel = toffel;
         this.hole = hole;
     }
 
-    public void setSizes(int width, int height) throws Exception {
+    void setSizes(int width, int height) throws Exception {
         this.offset = 0;
         this.padding_top = (height - width) / 2;
         this.edge_length = width / 3;
@@ -50,7 +50,7 @@ public class ToffelManager {
         }
     }
 
-    public void plantToffels() {
+    void plantToffels() {
         toffelSack.put(ToffelField.FIELD_TOP_LEFT, new Toffel(this.scaledToffel, this.scaledHole, new Point(offset, padding_top + offset)));
         toffelSack.put(ToffelField.FIELD_TOP_MIDDLE, new Toffel(this.scaledToffel, this.scaledHole, new Point(edge_length + offset, padding_top + offset)));
         toffelSack.put(ToffelField.FIELD_TOP_RIGHT, new Toffel(this.scaledToffel, this.scaledHole, new Point((2 * edge_length) + offset, padding_top + offset)));
@@ -62,7 +62,7 @@ public class ToffelManager {
         toffelSack.put(ToffelField.FIELD_BOTTOM_RIGHT, new Toffel(this.scaledToffel, this.scaledHole, new Point((2 * edge_length) + offset, padding_top + (2 * edge_length) + offset)));
     }
 
-    public void updateToffels(Canvas canvas) {
+    void updateToffels(Canvas canvas) {
         for (Toffel toffel : toffelSack.values()) {
             toffel.updateToffel(canvas);
         }
