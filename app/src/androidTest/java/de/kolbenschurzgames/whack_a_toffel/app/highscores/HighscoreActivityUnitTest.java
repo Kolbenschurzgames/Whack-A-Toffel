@@ -11,9 +11,7 @@ import de.kolbenschurzgames.whack_a_toffel.app.network.NetworkUtils;
 import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceCallback;
 import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceHelper_;
 import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.powermock.api.mockito.PowerMockito;
@@ -54,6 +52,11 @@ public class HighscoreActivityUnitTest {
 		mockStatic(NetworkUtils.class);
 		mockStatic(WebServiceHelper_.class);
 		when(WebServiceHelper_.getInstance_(any(Context.class))).thenReturn(mockWebServiceHelper);
+	}
+	
+	@After
+	public void tearDown() {
+		reset(mockWebServiceHelper);
 	}
 
 	@Test

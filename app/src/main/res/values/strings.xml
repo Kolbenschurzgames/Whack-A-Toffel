@@ -4,14 +4,15 @@
 	<string name="app_name">Tap-A-Tato</string>
 	<string name="startGame">Start Game</string>
 
-	<!--Temp Placeholders -->
 	<string name="title_activity_highscores">Highscores</string>
-	<string name="loading_highscores">Loading Highscores ...</string>
+	<string name="loading_highscores">Loading Highscores …</string>
 	<string name="highscores">Highscores</string>
 	<string name="load_highscores_error">Failed to retrieve highscores</string>
 	<string name="player">Player</string>
 	<string name="score">Score</string>
 	<string name="date">Date</string>
 	<string name="no_connection">No connection available</string>
+	
+	<string name="time">Time: </string>
 
 </resources>

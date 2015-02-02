@@ -14,15 +14,18 @@ import org.androidannotations.annotations.WindowFeature;
 @EActivity
 public class GameActivity extends Activity {
 
-    private static final int DURATION_IN_MILLISECONDS = 60000;
+    private static final int DURATION_IN_MILLISECONDS = 30000;
     private static final int TICK_INTERVAL = 1000;
 
     CountDownTimer countDownTimer;
+	
+	GameView gameView;
 
-    @Override
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(new GameView(this));
+		gameView = new GameView_(this);
+		setContentView(gameView);
     }
 
     @AfterViews
@@ -31,6 +34,7 @@ public class GameActivity extends Activity {
 
             @Override
             public void onTick(long millisUntilFinished) {
+				gameView.updateTimer(Long.toString(millisUntilFinished / 1000));
             }
 
             @Override
@@ -39,6 +43,7 @@ public class GameActivity extends Activity {
                 HighscoreActivity_.intent(GameActivity.this).start();
             }
         };
+		
         countDownTimer.start();
     }
 }
