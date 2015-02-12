@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import de.kolbenschurzgames.whack_a_toffel.app.R;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EView;
 import org.androidannotations.annotations.res.StringRes;
 
@@ -16,13 +17,13 @@ class GameView extends SurfaceView {
 	@StringRes(value = R.string.time)
 	String timeString;
 
+	@Bean
+	ToffelManager toffelManager;
+
 	private GameLoopThread gameLoopThread;
 	private boolean canDraw = false;
 	private Rect screenSize;
-	private ToffelManager toffelManager;
 	private Bitmap toffelHood;
-	private Bitmap toffel;
-	private Bitmap hole;
 
 	private float timerXPos;
 	private float timerYPos;
@@ -30,12 +31,10 @@ class GameView extends SurfaceView {
 
 	GameView(Context context) {
 		super(context);
+		this.setId(R.id.game_view_id);
 
 		gameLoopThread = new GameLoopThread(this);
 		toffelHood = BitmapFactory.decodeResource(getResources(), R.drawable.game_board_blank);
-		toffel = BitmapFactory.decodeResource(getResources(), R.drawable.hole_toffel);
-		hole = BitmapFactory.decodeResource(getResources(), R.drawable.hole_empty);
-		toffelManager = new ToffelManager(toffel, hole);
 
 		this.timerPaint = new Paint();
 		this.timerPaint.setColor(Color.WHITE);

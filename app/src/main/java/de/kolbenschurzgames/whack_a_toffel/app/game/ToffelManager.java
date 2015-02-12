@@ -1,12 +1,22 @@
 package de.kolbenschurzgames.whack_a_toffel.app.game;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import de.kolbenschurzgames.whack_a_toffel.app.R;
+import org.androidannotations.annotations.AfterInject;
+import org.androidannotations.annotations.EBean;
+import org.androidannotations.annotations.RootContext;
+import org.androidannotations.annotations.res.DrawableRes;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@EBean(scope = EBean.Scope.Singleton)
 class ToffelManager {
 
     private Bitmap toffel;
@@ -32,11 +42,18 @@ class ToffelManager {
     private final static int NUMBER_OF_TOFFELS = 9;
 
     private Map<ToffelField, Toffel> toffelSack = new HashMap<ToffelField, Toffel>(NUMBER_OF_TOFFELS);
-
-    ToffelManager(Bitmap toffel, Bitmap hole) {
-        this.toffel = toffel;
-        this.hole = hole;
-    }
+	
+	@DrawableRes(R.drawable.hole_toffel)
+	Drawable toffelResource;
+	
+	@DrawableRes(R.drawable.hole_empty)
+	Drawable emptyHoleResource;
+	
+	@AfterInject
+	void initBitmaps() {
+		this.toffel = ((BitmapDrawable)toffelResource).getBitmap();
+		this.hole = ((BitmapDrawable)emptyHoleResource).getBitmap();
+	}
 
     void setSizes(int width, int height) throws Exception {
         this.offset = 0;
@@ -67,4 +84,8 @@ class ToffelManager {
             toffel.updateToffel(canvas);
         }
     }
+	
+	boolean isToffelTapped(float x, float y) {
+		return false;
+	}
 }
