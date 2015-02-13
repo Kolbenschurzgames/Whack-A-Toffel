@@ -1,32 +1,43 @@
 package de.kolbenschurzgames.whack_a_toffel.app.game;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Rect;
+import android.graphics.*;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import de.kolbenschurzgames.whack_a_toffel.app.R;
+import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.EView;
+import org.androidannotations.annotations.res.StringRes;
 
+@EView
 class GameView extends SurfaceView {
-	private Bitmap toffelHood;
-	private Bitmap toffel;
-	private Bitmap hole;
-	private Rect screenSize;
-	private ToffelManager toffelManager;
+	private final Paint timerPaint;
+
+	@StringRes(value = R.string.time)
+	String timeString;
+
+	@Bean
+	ToffelManager toffelManager;
+
 	private GameLoopThread gameLoopThread;
 	private boolean canDraw = false;
+	private Rect screenSize;
+	private Bitmap toffelHood;
+
+	private float timerXPos;
+	private float timerYPos;
+	private String secondsUntilFinished;
 
 	GameView(Context context) {
 		super(context);
+		this.setId(R.id.game_view_id);
 
 		gameLoopThread = new GameLoopThread(this);
 		toffelHood = BitmapFactory.decodeResource(getResources(), R.drawable.game_board_blank);
-		toffel = BitmapFactory.decodeResource(getResources(), R.drawable.hole_toffel);
-		hole = BitmapFactory.decodeResource(getResources(), R.drawable.hole_empty);
-		toffelManager = new ToffelManager(toffel, hole);
+
+		this.timerPaint = new Paint();
+		this.timerPaint.setColor(Color.WHITE);
 
 		SurfaceHolder surfaceHolder = getHolder();
 		surfaceHolder.addCallback(new SurfaceHolder.Callback() {
@@ -52,7 +63,7 @@ class GameView extends SurfaceView {
 						retry = false;
 						canDraw = true;
 					} catch (InterruptedException e) {
-						Log.i("surfaceHolder", "Game Loop Thread interrupted", e);
+						Log.w("surfaceHolder", "Game Loop Thread interrupted", e);
 					}
 				}
 			}
@@ -70,15 +81,23 @@ class GameView extends SurfaceView {
 		int width = MeasureSpec.getSize(widthMeasureSpec);
 		int height = MeasureSpec.getSize(heightMeasureSpec);
 		setScreenSize(width, height);
+		setTimerSizeAndPos(height);
 		try {
 			setToffelHoodSizes(width, height);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e("ToffelHood", "Error while setting toffel hood sizes", e);
 		}
 	}
 
 	private void setScreenSize(int width, int height) {
 		screenSize = new Rect(0, 0, width, height);
+	}
+
+	private void setTimerSizeAndPos(int height) {
+		float timerSize = height / 20;
+		this.timerPaint.setTextSize(timerSize);
+		this.timerXPos = 30;
+		this.timerYPos = timerSize + 30;
 	}
 
 	private void setToffelHoodSizes(int width, int height) throws Exception {
@@ -88,9 +107,19 @@ class GameView extends SurfaceView {
 
 	@Override
 	public void draw(Canvas canvas) {
+		super.draw(canvas);
 		if (canDraw) {
 			canvas.drawBitmap(toffelHood, null, screenSize, null);
+			canvas.drawText(timeString + secondsUntilFinished, timerXPos, timerYPos, timerPaint);
 			toffelManager.updateToffels(canvas);
 		}
+	}
+
+	void updateTimer(String secondsUntilFinished) {
+		this.secondsUntilFinished = secondsUntilFinished;
+	}
+
+	String getCurrentTimerValue() {
+		return this.secondsUntilFinished;
 	}
 }
