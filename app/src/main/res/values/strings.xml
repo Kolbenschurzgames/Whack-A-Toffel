@@ -13,6 +13,6 @@
 	<string name="date">Date</string>
 	<string name="no_connection">No connection available</string>
 	
-	<string name="time">Time: </string>
+	<string name="time">Time</string>
 
 </resources>
