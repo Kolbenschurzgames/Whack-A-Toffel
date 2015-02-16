@@ -14,5 +14,10 @@
 	<string name="no_connection">Keine Verbindung verfügbar</string>
 	
 	<string name="time">Zeit</string>
+	
+	<string name="highscore_nickname">Nickname</string>
+	<string name="submit">Senden</string>
+	<string name="skip">Überspringen</string>
+	<string name="submit_highscore">Highscore senden</string>
 
 </resources>

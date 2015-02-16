@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.MotionEvent;
 import android.view.View;
-import de.kolbenschurzgames.whack_a_toffel.app.highscores.HighscoreActivity_;
+import de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivity_;
 import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
 import junit.framework.Assert;
 import org.junit.Before;
@@ -64,9 +64,11 @@ public class GameActivityUnitTest {
 	}
 
 	@Test
-	public void testHighscoreActivityLaunchedAfterTimerExpired() {
+	public void testSubmitHighscoreActivityLaunchedAfterTimerExpired() {
 		shadowCountDownTimer.invokeFinish();
-		Intent expectedIntent = new Intent(gameActivity, HighscoreActivity_.class);
+
+		Intent expectedIntent = SubmitHighscoreActivity_.intent(gameActivity)
+				.extra("score", 0).get();
 		Assert.assertEquals(expectedIntent, shadowOf(gameActivity).getNextStartedActivity());
 	}
 

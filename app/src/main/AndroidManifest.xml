@@ -37,6 +37,11 @@
 			android:name="de.kolbenschurzgames.whack_a_toffel.app.highscores.HighscoreActivity_"
 			android:label="@string/title_activity_highscores">
 		</activity>
+
+		<activity
+			android:name="de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivity_"
+			android:label="@string/submit_highscore"
+			android:theme="@android:style/Theme.Holo.Dialog"/>
 	</application>
 
 </manifest>

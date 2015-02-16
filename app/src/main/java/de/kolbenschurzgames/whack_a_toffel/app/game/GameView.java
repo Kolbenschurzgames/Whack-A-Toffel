@@ -67,18 +67,7 @@ class GameView extends SurfaceView {
 
 			@Override
 			public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-				boolean retry = true;
-				gameLoopThread.setRunning(false);
-				canDraw = false;
-				while (retry) {
-					try {
-						gameLoopThread.join();
-						retry = false;
-						canDraw = true;
-					} catch (InterruptedException e) {
-						Log.w("surfaceHolder", "Game Loop Thread interrupted", e);
-					}
-				}
+				stopDrawing();
 			}
 		});
 	}
@@ -86,6 +75,20 @@ class GameView extends SurfaceView {
 	private void startGameLoop() {
 		gameLoopThread.setRunning(true);
 		gameLoopThread.start();
+	}
+
+	void stopDrawing() {
+		boolean retry = true;
+		gameLoopThread.setRunning(false);
+		canDraw = false;
+		while (retry) {
+			try {
+				gameLoopThread.join();
+				retry = false;
+			} catch (InterruptedException e) {
+				Log.i("game view", "Game Loop Thread interrupted", e);
+			}
+		}
 	}
 
 	@Override
@@ -151,7 +154,7 @@ class GameView extends SurfaceView {
 	void updateScore(int score) {
 		this.score = Integer.toString(score);
 	}
-	
+
 	String getCurrentScore() {
 		return this.score;
 	}

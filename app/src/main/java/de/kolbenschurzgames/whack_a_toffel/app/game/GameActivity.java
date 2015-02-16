@@ -1,22 +1,22 @@
 package de.kolbenschurzgames.whack_a_toffel.app.game;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import de.kolbenschurzgames.whack_a_toffel.app.R;
-import de.kolbenschurzgames.whack_a_toffel.app.highscores.HighscoreActivity_;
+import de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivity_;
 import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
 import org.androidannotations.annotations.*;
 
 @WindowFeature(Window.FEATURE_NO_TITLE)
 @EActivity
-public class GameActivity extends Activity {
+public class GameActivity extends FragmentActivity {
 
-	private static final int DURATION_IN_MILLISECONDS = 30000;
+	private static final int DURATION_IN_MILLISECONDS = 5000;
 	private static final int TICK_INTERVAL = 1000;
 
 	CountDownTimer countDownTimer;
@@ -48,7 +48,10 @@ public class GameActivity extends Activity {
 			@Override
 			public void onFinish() {
 				Log.i("CountdownTimer", "Game round finished");
-				HighscoreActivity_.intent(GameActivity.this).start();
+				gameView.stopDrawing();
+				SubmitHighscoreActivity_.intent(GameActivity.this)
+						.extra("score", score)
+						.start();
 			}
 		};
 
