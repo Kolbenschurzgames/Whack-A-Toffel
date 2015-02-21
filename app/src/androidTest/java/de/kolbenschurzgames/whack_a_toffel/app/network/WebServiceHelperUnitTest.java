@@ -42,13 +42,12 @@ public class WebServiceHelperUnitTest {
 
 	private WebServiceHelper_ webServiceHelper;
 
-	private Context mockContext;
-	private RequestQueueSingleton mockRequestQueueSingleton;
+    private RequestQueueSingleton mockRequestQueueSingleton;
 
 	@Before
 	public void setUp() {
 		mockStatic(RequestQueueSingleton.class);
-		mockContext = mock(Context.class);
+        Context mockContext = mock(Context.class);
 		mockRequestQueueSingleton = PowerMockito.mock(RequestQueueSingleton.class);
 		when(RequestQueueSingleton.getInstance(any(Context.class))).thenReturn(mockRequestQueueSingleton);
 		webServiceHelper = WebServiceHelper_.getInstance_(mockContext);

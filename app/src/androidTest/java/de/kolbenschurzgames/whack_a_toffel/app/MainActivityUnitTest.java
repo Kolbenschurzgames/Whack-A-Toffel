@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.widget.Button;
 import de.kolbenschurzgames.whack_a_toffel.app.game.GameActivity_;
 import de.kolbenschurzgames.whack_a_toffel.app.highscores.HighscoreActivity_;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,18 +21,14 @@ public class MainActivityUnitTest {
 
 	private MainActivity_ mainActivity;
 
-	private Button startButton;
-	private Button highscoresButton;
-
 	@Before
 	public void setUp() {
 		mainActivity = setupActivity(MainActivity_.class);
-		startButton = (Button) mainActivity.findViewById(R.id.button_start_game);
-		highscoresButton = (Button) mainActivity.findViewById(R.id.button_highscores);
 	}
 
 	@Test
 	public void testStartButtonLaunchesGameActivityWithIntent() {
+		Button startButton = (Button) mainActivity.findViewById(R.id.button_start_game);
 		startButton.performClick();
 
 		Intent expectedIntent = new Intent(mainActivity, GameActivity_.class);
@@ -41,6 +37,7 @@ public class MainActivityUnitTest {
 
 	@Test
 	public void testHighscoresButtonLaunchesHighscoresActivityWithIntent() {
+		Button highscoresButton = (Button) mainActivity.findViewById(R.id.button_highscores);
 		highscoresButton.performClick();
 
 		Intent expectedIntent = new Intent(mainActivity, HighscoreActivity_.class);

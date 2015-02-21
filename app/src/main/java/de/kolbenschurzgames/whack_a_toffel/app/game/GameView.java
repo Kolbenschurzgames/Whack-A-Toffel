@@ -12,22 +12,32 @@ import org.androidannotations.annotations.res.StringRes;
 
 @EView
 class GameView extends SurfaceView {
+	private static final int TEXT_OFFSET = 30;
+	private static final String COLON_SPACE = ": ";
+
 	private final Paint timerPaint;
+	private final Paint scorePaint;
 
 	@StringRes(value = R.string.time)
 	String timeString;
-
+	@StringRes(value = R.string.score)
+	String scoreString;
 	@Bean
 	ToffelManager toffelManager;
+
+	private float textSize;
+	private float timerXPos;
+	private float timerYPos;
+	private float scoreXPos;
+	private float scoreYPos;
 
 	private GameLoopThread gameLoopThread;
 	private boolean canDraw = false;
 	private Rect screenSize;
 	private Bitmap toffelHood;
 
-	private float timerXPos;
-	private float timerYPos;
 	private String secondsUntilFinished;
+	private String score = "0";
 
 	GameView(Context context) {
 		super(context);
@@ -38,6 +48,9 @@ class GameView extends SurfaceView {
 
 		this.timerPaint = new Paint();
 		this.timerPaint.setColor(Color.WHITE);
+
+		this.scorePaint = new Paint(timerPaint);
+		this.scorePaint.setTextAlign(Paint.Align.RIGHT);
 
 		SurfaceHolder surfaceHolder = getHolder();
 		surfaceHolder.addCallback(new SurfaceHolder.Callback() {
@@ -54,18 +67,7 @@ class GameView extends SurfaceView {
 
 			@Override
 			public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-				boolean retry = true;
-				gameLoopThread.setRunning(false);
-				canDraw = false;
-				while (retry) {
-					try {
-						gameLoopThread.join();
-						retry = false;
-						canDraw = true;
-					} catch (InterruptedException e) {
-						Log.w("surfaceHolder", "Game Loop Thread interrupted", e);
-					}
-				}
+				stopDrawing();
 			}
 		});
 	}
@@ -75,13 +77,29 @@ class GameView extends SurfaceView {
 		gameLoopThread.start();
 	}
 
+	void stopDrawing() {
+		boolean retry = true;
+		gameLoopThread.setRunning(false);
+		canDraw = false;
+		while (retry) {
+			try {
+				gameLoopThread.join();
+				retry = false;
+			} catch (InterruptedException e) {
+				Log.i("game view", "Game Loop Thread interrupted", e);
+			}
+		}
+	}
+
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 		int width = MeasureSpec.getSize(widthMeasureSpec);
 		int height = MeasureSpec.getSize(heightMeasureSpec);
 		setScreenSize(width, height);
-		setTimerSizeAndPos(height);
+		setTextSize(height);
+		setTimerPos();
+		setScorePos(width);
 		try {
 			setToffelHoodSizes(width, height);
 		} catch (Exception e) {
@@ -89,15 +107,24 @@ class GameView extends SurfaceView {
 		}
 	}
 
+	private void setTextSize(int height) {
+		textSize = height / 20;
+		this.timerPaint.setTextSize(textSize);
+		this.scorePaint.setTextSize(textSize);
+	}
+
 	private void setScreenSize(int width, int height) {
 		screenSize = new Rect(0, 0, width, height);
 	}
 
-	private void setTimerSizeAndPos(int height) {
-		float timerSize = height / 20;
-		this.timerPaint.setTextSize(timerSize);
-		this.timerXPos = 30;
-		this.timerYPos = timerSize + 30;
+	private void setTimerPos() {
+		this.timerXPos = TEXT_OFFSET;
+		this.timerYPos = textSize + TEXT_OFFSET;
+	}
+
+	private void setScorePos(int width) {
+		this.scoreXPos = width - TEXT_OFFSET;
+		this.scoreYPos = textSize + TEXT_OFFSET;
 	}
 
 	private void setToffelHoodSizes(int width, int height) throws Exception {
@@ -107,10 +134,11 @@ class GameView extends SurfaceView {
 
 	@Override
 	public void draw(Canvas canvas) {
-		super.draw(canvas);
 		if (canDraw) {
+			super.draw(canvas);
 			canvas.drawBitmap(toffelHood, null, screenSize, null);
-			canvas.drawText(timeString + secondsUntilFinished, timerXPos, timerYPos, timerPaint);
+			canvas.drawText(timeString + COLON_SPACE + secondsUntilFinished, timerXPos, timerYPos, timerPaint);
+			canvas.drawText(scoreString + COLON_SPACE + score, scoreXPos, scoreYPos, scorePaint);
 			toffelManager.updateToffels(canvas);
 		}
 	}
@@ -121,5 +149,13 @@ class GameView extends SurfaceView {
 
 	String getCurrentTimerValue() {
 		return this.secondsUntilFinished;
+	}
+
+	void updateScore(int score) {
+		this.score = Integer.toString(score);
+	}
+
+	String getCurrentScore() {
+		return this.score;
 	}
 }

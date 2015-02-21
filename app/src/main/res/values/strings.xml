@@ -13,6 +13,11 @@
 	<string name="date">Date</string>
 	<string name="no_connection">No connection available</string>
 	
-	<string name="time">Time: </string>
+	<string name="time">Time</string>
+	
+	<string name="highscore_nickname">Nickname</string>
+	<string name="submit">Submit</string>
+	<string name="skip">Skip</string>
+	<string name="submit_highscore">Submit Highscore</string>
 
 </resources>
