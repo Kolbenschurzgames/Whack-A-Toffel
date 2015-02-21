@@ -6,10 +6,13 @@ module.exports = (function() {
 
 	var debug = require('debug')('toffel:database');
 	var Q = require('q');
-
+	
 	var Database = function(dbName) {
+		var mongoDbUri;
+		
 		if (typeof dbName === 'string') {
-			db = require('mongoskin').db('mongodb://localhost:27017/' + dbName, {native_parser: true});
+			mongoDbUri = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/' + dbName;
+			db = require('mongoskin').db(mongoDbUri, {native_parser: true});
 		} else {
 			throw new Error('Database name parameter missing');
 		}

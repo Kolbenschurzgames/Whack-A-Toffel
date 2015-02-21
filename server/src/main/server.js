@@ -13,7 +13,7 @@ module.exports = (function() {
     var koaBody = require('koa-body')();
     var app = koa();
 
-    var serverPort = 3000;
+    var serverPort = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
     var serverHost = '127.0.0.1';
 
     app.use(router(app));
@@ -35,8 +35,8 @@ module.exports = (function() {
         }
     });
 
-    app.listen(serverPort, serverHost, function() {
-        debug('Server listening on ' + serverHost + ':' + serverPort);
+    app.listen(serverPort, function() {
+        debug('Server listening on port ' + serverPort);
     });
 
 })();
