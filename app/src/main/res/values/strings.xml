@@ -19,5 +19,7 @@
 	<string name="submit">Submit</string>
 	<string name="skip">Skip</string>
 	<string name="submit_highscore">Submit Highscore</string>
+	<string name="submitting_highscore">Submitting Highscore</string>
+	<string name="wait_a_moment">Please wait a moment</string>
 
 </resources>

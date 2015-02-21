@@ -8,7 +8,6 @@ class GameLoopThread extends Thread {
 
 	private GameView view;
 	private boolean isRunning = false;
-	private long startTime;
 
 	GameLoopThread(GameView view) {
 		this.view = view;
@@ -24,7 +23,7 @@ class GameLoopThread extends Thread {
 		long sleepTime;
 		while (isRunning) {
 			Canvas c = null;
-			this.startTime = System.currentTimeMillis();
+			long startTime = System.currentTimeMillis();
 			try {
 				c = view.getHolder().lockCanvas();
 				synchronized (view.getHolder()) {
@@ -35,7 +34,7 @@ class GameLoopThread extends Thread {
 					view.getHolder().unlockCanvasAndPost(c);
 				}
 			}
-			sleepTime = ticksPS - (System.currentTimeMillis() - this.startTime);
+			sleepTime = ticksPS - (System.currentTimeMillis() - startTime);
 			try {
 				if (sleepTime > 0) {
 					sleep(sleepTime);

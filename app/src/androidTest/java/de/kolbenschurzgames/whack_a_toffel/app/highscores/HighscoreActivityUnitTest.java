@@ -2,6 +2,7 @@ package de.kolbenschurzgames.whack_a_toffel.app.highscores;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -32,7 +33,7 @@ import static org.robolectric.Robolectric.setupActivity;
  * Created by alfriedl on 26.09.14.
  */
 @RunWith(RobolectricTestRunner.class)
-@PowerMockIgnore({"org.mockito.*", "org.robolectric.*", "android.*"})
+@PowerMockIgnore({"org.robolectric.*", "android.*"})
 @PrepareForTest({NetworkUtils.class, WebServiceHelper_.class})
 public class HighscoreActivityUnitTest {
 
@@ -42,6 +43,7 @@ public class HighscoreActivityUnitTest {
 	private HighscoreActivity_ highscoreActivity;
 
 	private TextView textView;
+	private ProgressBar progressBar;
 	private TableLayout highscoresTable;
 
 	private WebServiceHelper_ mockWebServiceHelper;
@@ -53,12 +55,12 @@ public class HighscoreActivityUnitTest {
 		mockStatic(WebServiceHelper_.class);
 		when(WebServiceHelper_.getInstance_(any(Context.class))).thenReturn(mockWebServiceHelper);
 	}
-	
+
 	@After
 	public void tearDown() {
 		reset(mockWebServiceHelper);
 	}
-
+	
 	@Test
 	public void testErrorMessageShownIfNoConnectionAvailable() {
 		when(NetworkUtils.isConnectionAvailable(any(Context.class))).thenReturn(false);
@@ -70,13 +72,12 @@ public class HighscoreActivityUnitTest {
 	}
 
 	@Test
-	public void testLoadingHighscoresInfoIfConnectionAvailable() {
+	public void testProgressSpinnerIfConnectionAvailable() {
 		when(NetworkUtils.isConnectionAvailable(any(Context.class))).thenReturn(true);
 		highscoreActivity = setupActivity(HighscoreActivity_.class);
 
-		assertOnlyTextVisible();
+		assertOnlySpinnerVisible();
 		verify(mockWebServiceHelper, times(1)).getListOfHighscores(highscoreActivity);
-		Assert.assertEquals(highscoreActivity.getString(R.string.loading_highscores), textView.getText());
 	}
 
 	@Test
@@ -131,20 +132,31 @@ public class HighscoreActivityUnitTest {
 		assertViewsNotNull();
 		Assert.assertEquals(View.VISIBLE, textView.getVisibility());
 		Assert.assertEquals(View.INVISIBLE, highscoresTable.getVisibility());
+		Assert.assertEquals(View.GONE, progressBar.getVisibility());
+	}
+
+	private void assertOnlySpinnerVisible() {
+		assertViewsNotNull();
+		Assert.assertEquals(View.INVISIBLE, textView.getVisibility());
+		Assert.assertEquals(View.INVISIBLE, highscoresTable.getVisibility());
+		Assert.assertEquals(View.VISIBLE, progressBar.getVisibility());
 	}
 
 	private void assertHighscoresVisible() {
 		assertViewsNotNull();
 		Assert.assertEquals(View.INVISIBLE, textView.getVisibility());
+		Assert.assertEquals(View.GONE, progressBar.getVisibility());
 		Assert.assertEquals(View.VISIBLE, highscoresTable.getVisibility());
 	}
 
 	private void assertViewsNotNull() {
 		textView = (TextView) highscoreActivity.findViewById(R.id.highscores_text_view);
 		highscoresTable = (TableLayout) highscoreActivity.findViewById(R.id.highscores_table);
+		progressBar = (ProgressBar) highscoreActivity.findViewById(R.id.highscores_progress);
 
 		Assert.assertNotNull(textView);
 		Assert.assertNotNull(highscoresTable);
+		Assert.assertNotNull(progressBar);
 	}
 
 	private List<Highscore> buildHighscoreList() {

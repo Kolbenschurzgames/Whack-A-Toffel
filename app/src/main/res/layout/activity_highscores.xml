@@ -9,8 +9,17 @@
 		android:id="@+id/highscores_text_view"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="@string/loading_highscores"/>
+		android:layout_gravity="center_vertical|center_horizontal"
+		android:text="@string/loading_highscores"
+		android:visibility="invisible"/>
 
+	<ProgressBar
+		android:id="@+id/highscores_progress"
+		style="@android:style/Widget.ProgressBar.Large"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"/>
+	
 	<TableLayout
 		android:id="@+id/highscores_table"
 		android:layout_width="match_parent"
@@ -20,4 +29,5 @@
 		<include layout="@layout/table_row_highscore"/>
 
 	</TableLayout>
+
 </LinearLayout>

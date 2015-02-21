@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -12,10 +13,8 @@ import de.kolbenschurzgames.whack_a_toffel.app.model.Highscore;
 import de.kolbenschurzgames.whack_a_toffel.app.network.NetworkUtils;
 import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceCallback;
 import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceHelper;
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.*;
+import org.androidannotations.annotations.res.StringRes;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -27,49 +26,65 @@ import java.util.List;
 @EActivity(R.layout.activity_highscores)
 public class HighscoreActivity extends Activity implements WebServiceCallback<Highscore> {
 
-	private LayoutInflater inflater;
-
 	@ViewById(R.id.highscores_text_view)
-	protected TextView textView;
-
+	TextView textView;
 	@ViewById(R.id.highscores_table)
-	protected TableLayout highscoresTable;
-
+	TableLayout highscoresTable;
+	@ViewById(R.id.highscores_progress)
+	ProgressBar progressBar;
 	@Bean
-	protected WebServiceHelper webServiceHelper;
+	WebServiceHelper webServiceHelper;
+
+	@StringRes(R.string.no_connection)
+	String noConnectionString;
+	@StringRes(R.string.load_highscores_error)
+	String loadHighscoresErrorString;
+
+	private LayoutInflater inflater;
 
 	@AfterViews
 	protected void init() {
 		inflater = getLayoutInflater();
-
 		if (NetworkUtils.isConnectionAvailable(this)) {
-			webServiceHelper.getListOfHighscores(this);
+			fetchHighscores();
 		} else {
-			textView.setText(getString(R.string.no_connection));
+			displayError(noConnectionString);
 		}
+	}
+
+	@Background
+	void fetchHighscores() {
+		webServiceHelper.getListOfHighscores(this);
 	}
 
 	@Override
 	public void onResultListReceived(List<Highscore> highscores) {
-		textView.setVisibility(View.INVISIBLE);
-		highscoresTable.setVisibility(View.VISIBLE);
 		displayHighscores(highscores);
 	}
 
 	@Override
 	public void onError(Error e) {
 		Log.e("Highscores", e.getMessage(), e);
-		displayError();
+		displayError(loadHighscoresErrorString);
 	}
 
-	private void displayError() {
-		String errorMsg = getString(R.string.load_highscores_error);
+	@UiThread
+	void displayError(String errorMsg) {
 		highscoresTable.setVisibility(View.INVISIBLE);
+		progressBar.setVisibility(View.GONE);
 		textView.setText(errorMsg);
 		textView.setVisibility(View.VISIBLE);
 	}
 
-	private void displayHighscores(List<Highscore> highscores) {
+	@UiThread
+	void displayHighscores(List<Highscore> highscores) {
+		progressBar.setVisibility(View.GONE);
+		textView.setVisibility(View.INVISIBLE);
+		highscoresTable.setVisibility(View.VISIBLE);
+		populateHighscoresTable(highscores);
+	}
+
+	private void populateHighscoresTable(List<Highscore> highscores) {
 		for (int i = 0; i < highscores.size(); i++) {
 			Highscore highscore = highscores.get(i);
 			TableRow row = buildHighscoreTableRow(highscore);

@@ -52,6 +52,14 @@ public class Highscore {
 		return date;
 	}
 
+	public JSONObject toJSON() throws JSONException {
+		JSONObject json = new JSONObject();
+		json.put("name", this.name);
+		json.put("score", this.score);
+		json.put("timestamp", this.date.getTime());
+		return json;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -76,11 +84,10 @@ public class Highscore {
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder("Highscore{");
-		sb.append("name='").append(name).append('\'');
-		sb.append(", score=").append(score);
-		sb.append(", date=").append(date);
-		sb.append('}');
-		return sb.toString();
+		return "Highscore{" +
+				"name='" + name + '\'' +
+				", score=" + score +
+				", date=" + date +
+				'}';
 	}
 }

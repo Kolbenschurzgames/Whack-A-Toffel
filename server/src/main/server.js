@@ -14,7 +14,6 @@ module.exports = (function() {
     var app = koa();
 
     var serverPort = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
-    var serverHost = '127.0.0.1';
 
     app.use(router(app));
 

@@ -7,6 +7,7 @@ import android.view.View;
 import de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivity_;
 import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
 import junit.framework.Assert;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,6 +18,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.shadows.ShadowCountDownTimer;
+
+import java.util.Date;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -52,6 +55,11 @@ public class GameActivityUnitTest {
 		shadowCountDownTimer = shadowOf(gameActivity.countDownTimer);
 	}
 
+	@After
+	public void tearDown() {
+		reset(mockToffelManager);
+	}
+
 	@Test
 	public void testInitStartsTimer() {
 		Assert.assertTrue(shadowCountDownTimer.hasStarted());
@@ -66,10 +74,11 @@ public class GameActivityUnitTest {
 	@Test
 	public void testSubmitHighscoreActivityLaunchedAfterTimerExpired() {
 		shadowCountDownTimer.invokeFinish();
+		Intent startedActivityIntent = shadowOf(gameActivity).getNextStartedActivity();
 
-		Intent expectedIntent = SubmitHighscoreActivity_.intent(gameActivity)
-				.extra("score", 0).get();
-		Assert.assertEquals(expectedIntent, shadowOf(gameActivity).getNextStartedActivity());
+		Assert.assertEquals(SubmitHighscoreActivity_.class.getName(), startedActivityIntent.getComponent().getClassName());
+		Assert.assertEquals(0, startedActivityIntent.getExtras().get("score"));
+		Assert.assertEquals(Date.class, startedActivityIntent.getExtras().get("endOfGame").getClass());
 	}
 
 	@Test

@@ -68,13 +68,13 @@ describe('validator spec', function() {
         });
 
         it('should return true for valid highscore objects', function() {
-            var invalidName = {
+            var validHighscore = {
                 name: 'name',
                 score: 1000,
                 timestamp: timestamp
             };
 
-            expect(validator.isValidHighscore(invalidName)).to.be.true;
+            expect(validator.isValidHighscore(validHighscore)).to.be.true;
         });
     });
 });
