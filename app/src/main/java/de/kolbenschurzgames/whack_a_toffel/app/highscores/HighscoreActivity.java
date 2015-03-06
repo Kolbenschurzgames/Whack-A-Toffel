@@ -60,7 +60,12 @@ public class HighscoreActivity extends Activity implements WebServiceCallback<Hi
 
 	@Override
 	public void onResultListReceived(List<Highscore> highscores) {
+		sortHighscoresDescending(highscores);
 		displayHighscores(highscores);
+	}
+
+	private void sortHighscoresDescending(List<Highscore> highscores) {
+		Collections.sort(highscores, Collections.reverseOrder());
 	}
 
 	@Override
@@ -83,12 +88,7 @@ public class HighscoreActivity extends Activity implements WebServiceCallback<Hi
 		textView.setVisibility(View.INVISIBLE);
 		highscoresTable.setVisibility(View.VISIBLE);
 
-		sortHighscoresDescending(highscores);
 		populateHighscoresTable(highscores);
-	}
-
-	private void sortHighscoresDescending(List<Highscore> highscores) {
-		Collections.sort(highscores, Collections.reverseOrder());
 	}
 
 	private void populateHighscoresTable(List<Highscore> highscores) {
