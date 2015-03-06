@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by alfriedl on 20.09.14.
  */
-public class Highscore {
+public class Highscore implements Comparable<Highscore> {
 
 	private final String name;
 	private final int score;
@@ -89,5 +89,10 @@ public class Highscore {
 				", score=" + score +
 				", date=" + date +
 				'}';
+	}
+
+	@Override
+	public int compareTo(Highscore another) {
+		return this.getScore() - another.getScore();
 	}
 }

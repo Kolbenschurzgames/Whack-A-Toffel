@@ -17,6 +17,7 @@ import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.res.StringRes;
 
 import java.text.DateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -81,7 +82,13 @@ public class HighscoreActivity extends Activity implements WebServiceCallback<Hi
 		progressBar.setVisibility(View.GONE);
 		textView.setVisibility(View.INVISIBLE);
 		highscoresTable.setVisibility(View.VISIBLE);
+
+		sortHighscoresDescending(highscores);
 		populateHighscoresTable(highscores);
+	}
+
+	private void sortHighscoresDescending(List<Highscore> highscores) {
+		Collections.sort(highscores, Collections.reverseOrder());
 	}
 
 	private void populateHighscoresTable(List<Highscore> highscores) {

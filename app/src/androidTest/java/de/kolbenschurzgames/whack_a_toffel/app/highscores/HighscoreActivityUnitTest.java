@@ -12,7 +12,10 @@ import de.kolbenschurzgames.whack_a_toffel.app.network.NetworkUtils;
 import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceCallback;
 import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceHelper_;
 import junit.framework.Assert;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.powermock.api.mockito.PowerMockito;
@@ -21,9 +24,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.robolectric.RobolectricTestRunner;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -60,7 +61,7 @@ public class HighscoreActivityUnitTest {
 	public void tearDown() {
 		reset(mockWebServiceHelper);
 	}
-	
+
 	@Test
 	public void testErrorMessageShownIfNoConnectionAvailable() {
 		when(NetworkUtils.isConnectionAvailable(any(Context.class))).thenReturn(false);
@@ -109,6 +110,8 @@ public class HighscoreActivityUnitTest {
 	}
 
 	private void assertHighscoresDisplayedCorrectly(List<Highscore> highscores) {
+		sortHighscoresDescendingByScore(highscores);
+
 		for (int i = 0; i < highscores.size(); i++) {
 			TableRow currentRow = (TableRow) highscoresTable.getChildAt(i);
 			Assert.assertNotNull(currentRow);
@@ -126,6 +129,15 @@ public class HighscoreActivityUnitTest {
 				Assert.assertEquals(highscoreActivity.buildLocalizedDateTimeString(score.getDate()), dateColumn.getText());
 			}
 		}
+	}
+
+	private void sortHighscoresDescendingByScore(List<Highscore> highscores) {
+		Collections.sort(highscores, new Comparator<Highscore>() {
+			@Override
+			public int compare(Highscore hs1, Highscore hs2) {
+				return hs2.getScore() - hs1.getScore();
+			}
+		});
 	}
 
 	private void assertOnlyTextVisible() {
@@ -162,9 +174,11 @@ public class HighscoreActivityUnitTest {
 	private List<Highscore> buildHighscoreList() {
 		List<Highscore> highscores = new ArrayList<Highscore>();
 		Highscore score1 = new Highscore("score1", 1000, new Date());
-		Highscore score2 = new Highscore("score2", 2000, new Date());
+		Highscore score2 = new Highscore("score2", 3000, new Date());
+		Highscore score3 = new Highscore("score3", 2000, new Date());
 		highscores.add(score1);
 		highscores.add(score2);
+		highscores.add(score3);
 		return highscores;
 	}
 }
