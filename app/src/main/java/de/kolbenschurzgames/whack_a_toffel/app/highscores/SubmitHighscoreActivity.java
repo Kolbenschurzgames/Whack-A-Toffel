@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
+import de.kolbenschurzgames.whack_a_toffel.app.MainActivity_;
 import de.kolbenschurzgames.whack_a_toffel.app.R;
 import de.kolbenschurzgames.whack_a_toffel.app.model.Highscore;
 import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceCallback;
@@ -58,11 +59,11 @@ public class SubmitHighscoreActivity extends Activity implements WebServiceCallb
 		progressDialog = ProgressDialog.show(this, submittingString, waitString);
 		submitHighscore();
 	}
-	
+
 	@Background
 	void submitHighscore() {
 		Highscore highscore = buildHighscore();
-		webServiceHelper.submitHighscore(highscore, this);	
+		webServiceHelper.submitHighscore(highscore, this);
 	}
 
 	private Highscore buildHighscore() {
@@ -72,7 +73,11 @@ public class SubmitHighscoreActivity extends Activity implements WebServiceCallb
 
 	@Click(R.id.button_skip)
 	void onSkipClicked() {
-		launchHighscoreActivity();
+		launchMainActivity();
+	}
+
+	private void launchMainActivity() {
+		MainActivity_.intent(SubmitHighscoreActivity.this).start();
 	}
 
 	@Override
@@ -91,6 +96,7 @@ public class SubmitHighscoreActivity extends Activity implements WebServiceCallb
 		if (progressDialog != null && progressDialog.isShowing()) {
 			progressDialog.dismiss();
 		}
+		;
 		HighscoreActivity_.intent(SubmitHighscoreActivity.this).start();
 	}
 }
