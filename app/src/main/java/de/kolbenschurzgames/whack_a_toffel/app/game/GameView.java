@@ -57,7 +57,6 @@ class GameView extends SurfaceView {
 
 			@Override
 			public void surfaceCreated(SurfaceHolder holder) {
-				toffelManager.plantToffels();
 				startGameLoop();
 			}
 
@@ -100,15 +99,11 @@ class GameView extends SurfaceView {
 		setTextSize(height);
 		setTimerPos();
 		setScorePos(width);
-		try {
-			setToffelHoodSizes(width, height);
-		} catch (Exception e) {
-			Log.e("ToffelHood", "Error while setting toffel hood sizes", e);
-		}
+		initToffelHood(width, height);
 	}
 
 	private void setTextSize(int height) {
-		textSize = height / 20;
+		this.textSize = height / 20;
 		this.timerPaint.setTextSize(textSize);
 		this.scorePaint.setTextSize(textSize);
 	}
@@ -127,9 +122,14 @@ class GameView extends SurfaceView {
 		this.scoreYPos = textSize + TEXT_OFFSET;
 	}
 
-	private void setToffelHoodSizes(int width, int height) throws Exception {
-		toffelManager.setSizes(width, height);
-		canDraw = true;
+	private void initToffelHood(int width, int height) {
+		try {
+			toffelManager.initializeToffelHood(width, height);
+			canDraw = true;
+		} catch (IllegalStateException e) {
+			Log.e("ToffelHood", "Error while setting toffel hood sizes", e);
+			canDraw = false;
+		}
 	}
 
 	@Override
