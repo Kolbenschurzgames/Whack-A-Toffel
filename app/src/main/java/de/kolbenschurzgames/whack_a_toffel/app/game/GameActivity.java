@@ -10,6 +10,8 @@ import android.view.Window;
 import de.kolbenschurzgames.whack_a_toffel.app.R;
 import de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivity_;
 import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
+import de.kolbenschurzgames.whack_a_toffel.app.sound.SoundManager;
+
 import org.androidannotations.annotations.*;
 
 import java.util.Date;
@@ -18,7 +20,7 @@ import java.util.Date;
 @EActivity
 class GameActivity extends FragmentActivity {
 
-	private static final int DURATION_IN_MILLISECONDS = 10000;
+	private static final int DURATION_IN_MILLISECONDS = 1000 * 10;
 	private static final int TICK_INTERVAL = 1000;
 
 	CountDownTimer countDownTimer;
@@ -27,6 +29,9 @@ class GameActivity extends FragmentActivity {
 
 	@Bean
 	ToffelManager toffelManager;
+
+	@Bean
+	SoundManager soundManager;
 
 	private ToffelTap lastTap;
 	private int score;
@@ -77,5 +82,8 @@ class GameActivity extends FragmentActivity {
 		++score;
 		toffelManager.toffelTapped(field);
 		gameView.updateScore(score);
+
+		// play a massive Schoas here
+		soundManager.playRandomTapSound(this);
 	}
 }

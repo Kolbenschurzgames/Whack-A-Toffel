@@ -3,6 +3,7 @@ package de.kolbenschurzgames.whack_a_toffel.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.widget.Button;
+
 import de.kolbenschurzgames.whack_a_toffel.app.game.GameActivity_;
 import de.kolbenschurzgames.whack_a_toffel.app.highscores.HighscoreActivity_;
 import org.androidannotations.annotations.*;
