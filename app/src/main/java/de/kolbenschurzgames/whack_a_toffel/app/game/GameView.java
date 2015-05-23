@@ -11,151 +11,135 @@ import org.androidannotations.annotations.EView;
 import org.androidannotations.annotations.res.StringRes;
 
 @EView
-class GameView extends SurfaceView {
-	private static final int TEXT_OFFSET = 30;
-	private static final String COLON_SPACE = ": ";
+public class GameView extends SurfaceView {
+    private static final int TEXT_OFFSET = 30;
+    private static final String COLON_SPACE = ": ";
 
-	private final Paint timerPaint;
-	private final Paint scorePaint;
+    private final Paint timerPaint;
+    private final Paint scorePaint;
 
-	@StringRes(value = R.string.time)
-	String timeString;
-	@StringRes(value = R.string.score)
-	String scoreString;
-	@Bean
-	ToffelManager toffelManager;
+    @StringRes(value = R.string.time)
+    String timeString;
 
-	private float textSize;
-	private float timerXPos;
-	private float timerYPos;
-	private float scoreXPos;
-	private float scoreYPos;
+    @StringRes(value = R.string.score)
+    String scoreString;
 
-	private GameLoopThread gameLoopThread;
-	private boolean canDraw = false;
-	private Rect screenSize;
-	private Bitmap toffelHood;
+    @Bean
+    ToffelManager toffelManager;
 
-	private String secondsUntilFinished;
-	private String score = "0";
+    private float textSize;
+    private float timerXPos;
+    private float timerYPos;
+    private float scoreXPos;
+    private float scoreYPos;
 
-	GameView(Context context) {
-		super(context);
-		this.setId(R.id.game_view_id);
+    private GameLoopThread gameLoopThread;
+    private Rect screenSize;
+    private Bitmap toffelHood;
 
-		gameLoopThread = new GameLoopThread(this);
-		toffelHood = BitmapFactory.decodeResource(getResources(), R.drawable.game_board_blank);
+    private String secondsUntilFinished;
+    private String score = "0";
 
-		this.timerPaint = new Paint();
-		this.timerPaint.setColor(Color.WHITE);
+    GameView(Context context) {
+        super(context);
+        this.setId(R.id.game_view_id);
 
-		this.scorePaint = new Paint(timerPaint);
-		this.scorePaint.setTextAlign(Paint.Align.RIGHT);
+        this.toffelHood = BitmapFactory.decodeResource(getResources(), R.drawable.game_board_blank);
 
-		SurfaceHolder surfaceHolder = getHolder();
-		surfaceHolder.addCallback(new SurfaceHolder.Callback() {
+        this.timerPaint = new Paint();
+        this.timerPaint.setColor(Color.WHITE);
 
-			@Override
-			public void surfaceCreated(SurfaceHolder holder) {
-				startGameLoop();
-			}
+        this.scorePaint = new Paint(timerPaint);
+        this.scorePaint.setTextAlign(Paint.Align.RIGHT);
+    }
 
-			@Override
-			public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-			}
+    public void startDrawing() {
+        gameLoopThread = new GameLoopThread(this);
+        gameLoopThread.setRunning(true);
+        gameLoopThread.start();
+    }
 
-			@Override
-			public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-				stopDrawing();
-			}
-		});
-	}
+    public void stopDrawing() {
+        boolean retry = true;
+        gameLoopThread.setRunning(false);
+        while (retry) {
+            try {
+                gameLoopThread.join();
+                retry = false;
+            } catch (InterruptedException e) {
+                Log.i("game view", "Game Loop Thread interrupted", e);
+            }
+        }
+    }
 
-	private void startGameLoop() {
-		gameLoopThread.setRunning(true);
-		gameLoopThread.start();
-	}
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-	void stopDrawing() {
-		boolean retry = true;
-		gameLoopThread.setRunning(false);
-		canDraw = false;
-		while (retry) {
-			try {
-				gameLoopThread.join();
-				retry = false;
-			} catch (InterruptedException e) {
-				Log.i("game view", "Game Loop Thread interrupted", e);
-			}
-		}
-	}
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
 
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		int width = MeasureSpec.getSize(widthMeasureSpec);
-		int height = MeasureSpec.getSize(heightMeasureSpec);
-		setScreenSize(width, height);
-		setTextSize(height);
-		setTimerPos();
-		setScorePos(width);
-		initToffelHood(width, height);
-	}
+        setScreenSize(width, height);
+        setTextSize(height);
 
-	private void setTextSize(int height) {
-		this.textSize = height / 20;
-		this.timerPaint.setTextSize(textSize);
-		this.scorePaint.setTextSize(textSize);
-	}
+        setTimerPos();
+        setScorePos(width);
 
-	private void setScreenSize(int width, int height) {
-		screenSize = new Rect(0, 0, width, height);
-	}
+        setupToffelHood(width, height);
+    }
 
-	private void setTimerPos() {
-		this.timerXPos = TEXT_OFFSET;
-		this.timerYPos = textSize + TEXT_OFFSET;
-	}
+    private void setTextSize(int height) {
+        this.textSize = height / 20;
+        this.timerPaint.setTextSize(textSize);
+        this.scorePaint.setTextSize(textSize);
+    }
 
-	private void setScorePos(int width) {
-		this.scoreXPos = width - TEXT_OFFSET;
-		this.scoreYPos = textSize + TEXT_OFFSET;
-	}
+    private void setScreenSize(int width, int height) {
+        screenSize = new Rect(0, 0, width, height);
+    }
 
-	private void initToffelHood(int width, int height) {
-		try {
-			toffelManager.initializeToffelHood(width, height);
-			canDraw = true;
-		} catch (IllegalStateException e) {
-			Log.e("ToffelHood", "Error while setting toffel hood sizes", e);
-			canDraw = false;
-		}
-	}
+    private void setTimerPos() {
+        this.timerXPos = TEXT_OFFSET;
+        this.timerYPos = textSize + TEXT_OFFSET;
+    }
 
-	@Override
-	public void draw(Canvas canvas) {
-		if (canDraw) {
-			super.draw(canvas);
-			canvas.drawBitmap(toffelHood, null, screenSize, null);
-			canvas.drawText(timeString + COLON_SPACE + secondsUntilFinished, timerXPos, timerYPos, timerPaint);
-			canvas.drawText(scoreString + COLON_SPACE + score, scoreXPos, scoreYPos, scorePaint);
-			toffelManager.updateToffels(canvas);
-		}
-	}
+    private void setScorePos(int width) {
+        this.scoreXPos = width - TEXT_OFFSET;
+        this.scoreYPos = textSize + TEXT_OFFSET;
+    }
 
-	void updateTimer(String secondsUntilFinished) {
-		this.secondsUntilFinished = secondsUntilFinished;
-	}
+    private void setupToffelHood(int width, int height) {
+        try {
+            toffelManager.initializeToffelHood(width, height);
+        } catch (IllegalStateException e) {
+            Log.e("ToffelHood", "Error while setting toffel hood sizes", e);
+        }
+    }
 
-	String getCurrentTimerValue() {
-		return this.secondsUntilFinished;
-	}
+    @Override
+    public void draw(Canvas canvas) {
+        if (gameLoopThread.isRunning() && canvas != null) {
+            super.draw(canvas);
+            canvas.drawBitmap(toffelHood, null, screenSize, null);
+            canvas.drawText(timeString + COLON_SPACE + secondsUntilFinished, timerXPos, timerYPos, timerPaint);
+            canvas.drawText(scoreString + COLON_SPACE + score, scoreXPos, scoreYPos, scorePaint);
+            toffelManager.updateToffels(canvas);
+        }
+    }
 
-	void updateScore(int score) {
-		this.score = Integer.toString(score);
-	}
+    void updateTimer(String secondsUntilFinished) {
+        this.secondsUntilFinished = secondsUntilFinished;
+    }
 
-	String getCurrentScore() {
-		return this.score;
-	}
+    String getCurrentTimerValue() {
+        return this.secondsUntilFinished;
+    }
+
+    void updateScore(int score) {
+        this.score = Integer.toString(score);
+    }
+
+    String getCurrentScore() {
+        return this.score;
+    }
 }
