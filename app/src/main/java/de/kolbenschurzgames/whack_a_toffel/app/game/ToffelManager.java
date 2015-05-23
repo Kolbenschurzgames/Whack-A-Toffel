@@ -62,7 +62,7 @@ class ToffelManager {
 		toffelSack.put(ToffelField.FIELD_TOP_RIGHT, new Toffel(this.scaledToffel, this.scaledHole, new Point((2 * edge_length) + offset, padding_top + offset)));
 		toffelSack.put(ToffelField.FIELD_MIDDLE_LEFT, new Toffel(this.scaledToffel, this.scaledHole, new Point(offset, padding_top + edge_length + offset)));
 		toffelSack.put(ToffelField.FIELD_MIDDLE_MIDDLE, new Toffel(this.scaledToffel, this.scaledHole, new Point(edge_length + offset, padding_top + edge_length + offset)));
-		toffelSack.put(ToffelField.FILED_MIDDLE_RIGHT, new Toffel(this.scaledToffel, this.scaledHole, new Point((2 * edge_length) + offset, padding_top + edge_length + offset)));
+		toffelSack.put(ToffelField.FIELD_MIDDLE_RIGHT, new Toffel(this.scaledToffel, this.scaledHole, new Point((2 * edge_length) + offset, padding_top + edge_length + offset)));
 		toffelSack.put(ToffelField.FIELD_BOTTOM_LEFT, new Toffel(this.scaledToffel, this.scaledHole, new Point(offset, padding_top + (2 * edge_length) + offset)));
 		toffelSack.put(ToffelField.FIELD_BOTTOM_MIDDLE, new Toffel(this.scaledToffel, this.scaledHole, new Point(edge_length + offset, padding_top + (2 * edge_length) + offset)));
 		toffelSack.put(ToffelField.FIELD_BOTTOM_RIGHT, new Toffel(this.scaledToffel, this.scaledHole, new Point((2 * edge_length) + offset, padding_top + (2 * edge_length) + offset)));
