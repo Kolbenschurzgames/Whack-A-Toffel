@@ -1,13 +1,17 @@
 package de.kolbenschurzgames.whack_a_toffel.app.network;
 
 import android.content.Context;
+import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import de.kolbenschurzgames.whack_a_toffel.app.model.Highscore;
 import junit.framework.Assert;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,6 +32,7 @@ import static junit.framework.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
 
 /**
  * Created by alfriedl on 30.12.14.
@@ -42,17 +47,20 @@ public class WebServiceHelperUnitTest {
 
 	private WebServiceHelper_ webServiceHelper;
 
-    private RequestQueueSingleton mockRequestQueueSingleton;
+	private RequestQueueSingleton mockRequestQueueSingleton;
+
+	private Highscore highscoreMock;
 
 	@Before
 	public void setUp() {
 		mockStatic(RequestQueueSingleton.class);
-        Context mockContext = mock(Context.class);
+		Context mockContext = mock(Context.class);
 		mockRequestQueueSingleton = PowerMockito.mock(RequestQueueSingleton.class);
 		when(RequestQueueSingleton.getInstance(any(Context.class))).thenReturn(mockRequestQueueSingleton);
+		highscoreMock = mock(Highscore.class);
 		webServiceHelper = WebServiceHelper_.getInstance_(mockContext);
 	}
-
+	
 	@Test
 	public void testErrorResponse() {
 		webServiceHelper.getListOfHighscores(new WebServiceCallback<Highscore>() {
@@ -133,5 +141,79 @@ public class WebServiceHelperUnitTest {
 		Method deliverResponse = JsonRequest.class.getDeclaredMethod("deliverResponse", Object.class);
 		deliverResponse.setAccessible(true);
 		deliverResponse.invoke(request, responseArray);
+	}
+
+	@Test
+	public void testSubmitErrorResponse() throws JSONException {
+		webServiceHelper.submitHighscore(highscoreMock, new WebServiceCallback<Highscore>() {
+			@Override
+			public void onResultListReceived(List<Highscore> results) {
+				fail("Result callback should not have been triggered");
+			}
+
+			@Override
+			public void onError(Error e) {
+				Assert.assertNotNull(e);
+				Assert.assertTrue(e instanceof WebServiceError);
+			}
+		});
+
+		verify(highscoreMock, times(1)).toJSON();
+
+		ArgumentCaptor<JsonObjectRequest> argCaptor = ArgumentCaptor.forClass(JsonObjectRequest.class);
+		verify(mockRequestQueueSingleton).addToRequestQueue(argCaptor.capture());
+
+		JsonObjectRequest request = argCaptor.getValue();
+		Assert.assertEquals(Request.Method.POST, request.getMethod());
+
+		request.deliverError(new VolleyError("error"));
+	}
+
+	@Test
+	public void testParseHighscoreError() throws Exception {
+		when(highscoreMock.toJSON()).thenThrow(new JSONException("error"));
+		webServiceHelper.submitHighscore(highscoreMock, new WebServiceCallback<Highscore>() {
+			@Override
+			public void onResultListReceived(List<Highscore> results) {
+				fail("Result callback should not have been triggered");
+			}
+
+			@Override
+			public void onError(Error e) {
+				Assert.assertNotNull(e);
+				Assert.assertTrue(e instanceof WebServiceError);
+			}
+		});
+
+		verify(highscoreMock, times(1)).toJSON();
+		verifyZeroInteractions(mockRequestQueueSingleton);
+	}
+
+	@Test
+	public void testSubmitSuccessful() throws Exception {
+		webServiceHelper.submitHighscore(highscoreMock, new WebServiceCallback<Highscore>() {
+			@Override
+			public void onResultListReceived(List<Highscore> results) {
+				Assert.assertEquals(highscoreMock, results.get(0));
+			}
+
+			@Override
+			public void onError(Error e) {
+				fail("Error callback should not have been triggered");
+			}
+		});
+
+		verify(highscoreMock, times(1)).toJSON();
+
+		ArgumentCaptor<JsonObjectRequest> argCaptor = ArgumentCaptor.forClass(JsonObjectRequest.class);
+		verify(mockRequestQueueSingleton).addToRequestQueue(argCaptor.capture());
+
+		JsonObjectRequest request = argCaptor.getValue();
+		Assert.assertEquals(Request.Method.POST, request.getMethod());
+
+		// Workaround because JsonRequest.deliverResponse is not public (unlike deliverError)
+		Method deliverResponse = JsonRequest.class.getDeclaredMethod("deliverResponse", Object.class);
+		deliverResponse.setAccessible(true);
+		deliverResponse.invoke(request, new JSONObject());
 	}
 }

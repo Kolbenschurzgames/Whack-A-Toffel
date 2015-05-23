@@ -19,5 +19,7 @@
 	<string name="submit">Senden</string>
 	<string name="skip">Überspringen</string>
 	<string name="submit_highscore">Highscore senden</string>
+	<string name="submitting_highscore">Übertrage Highscore</string>
+	<string name="wait_a_moment">Bitte warten</string>
 
 </resources>

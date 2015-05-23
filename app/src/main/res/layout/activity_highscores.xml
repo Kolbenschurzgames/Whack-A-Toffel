@@ -1,23 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			  android:layout_width="match_parent"
-			  android:layout_height="match_parent"
-			  android:orientation="vertical">
-
-	<TextView
-		android:id="@+id/highscores_text_view"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/loading_highscores"/>
-
-	<TableLayout
-		android:id="@+id/highscores_table"
+	<LinearLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:visibility="invisible">
+		android:layout_height="match_parent"
+		android:orientation="vertical">
 
-		<include layout="@layout/table_row_highscore"/>
+		<TextView
+			android:id="@+id/highscores_text_view"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical|center_horizontal"
+			android:text="@string/loading_highscores"
+			android:visibility="invisible"/>
 
-	</TableLayout>
-</LinearLayout>
+		<ProgressBar
+			android:id="@+id/highscores_progress"
+			style="@android:style/Widget.ProgressBar.Large"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"/>
+
+		<TableLayout
+			android:id="@+id/highscores_table"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:visibility="invisible">
+
+			<include layout="@layout/table_row_highscore"/>
+
+		</TableLayout>
+
+	</LinearLayout>
+</ScrollView>

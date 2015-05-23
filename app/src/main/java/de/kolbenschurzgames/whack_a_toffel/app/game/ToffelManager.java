@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import de.kolbenschurzgames.whack_a_toffel.app.R;
 import de.kolbenschurzgames.whack_a_toffel.app.model.Toffel;
 import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
@@ -41,19 +42,21 @@ class ToffelManager {
 		this.hole = ((BitmapDrawable) emptyHoleResource).getBitmap();
 	}
 
-	void setSizes(int width, int height) throws Exception {
+	void initializeToffelHood(int width, int height) throws IllegalStateException {
 		this.offset = 0;
 		this.padding_top = (height - width) / 2;
 		this.edge_length = width / 3;
 		this.scaledHole = Bitmap.createScaledBitmap(hole, edge_length - offset, edge_length - offset, false);
 		this.scaledToffel = Bitmap.createScaledBitmap(toffel, edge_length - offset, edge_length - offset, false);
 
-		if (this.scaledHole == null || this.scaledToffel == null) {
-			throw new Exception("Error while resizing graphics");
+		if (this.scaledHole != null && this.scaledToffel != null) {
+			plantToffels();
+		} else {
+			throw new IllegalStateException("Error while resizing graphics");
 		}
 	}
 
-	void plantToffels() {
+	private void plantToffels() {
 		toffelSack.put(ToffelField.FIELD_TOP_LEFT, new Toffel(this.scaledToffel, this.scaledHole, new Point(offset, padding_top + offset)));
 		toffelSack.put(ToffelField.FIELD_TOP_MIDDLE, new Toffel(this.scaledToffel, this.scaledHole, new Point(edge_length + offset, padding_top + offset)));
 		toffelSack.put(ToffelField.FIELD_TOP_RIGHT, new Toffel(this.scaledToffel, this.scaledHole, new Point((2 * edge_length) + offset, padding_top + offset)));
@@ -88,6 +91,11 @@ class ToffelManager {
 	}
 
 	void toffelTapped(ToffelField field) {
-		toffelSack.get(field).hideToffel();
+		Toffel toffel = toffelSack.get(field);
+		if (toffel != null) {
+			toffel.hideToffel();
+		} else {
+			Log.w("ToffelManager", "toffelTapped invoked for Field " + field.name() + " with no toffel");
+		}
 	}
 }

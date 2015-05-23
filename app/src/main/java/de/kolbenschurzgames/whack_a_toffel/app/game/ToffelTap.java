@@ -45,10 +45,9 @@ final class ToffelTap {
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder("ToffelTap{");
-		sb.append("field=").append(field);
-		sb.append(", tapped=").append(tapped);
-		sb.append('}');
-		return sb.toString();
+		return "ToffelTap{" +
+				"field=" + field +
+				", tapped=" + tapped +
+				'}';
 	}
 }

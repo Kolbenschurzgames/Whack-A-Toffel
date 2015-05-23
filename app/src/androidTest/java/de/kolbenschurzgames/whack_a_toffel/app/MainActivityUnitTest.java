@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.widget.Button;
 import de.kolbenschurzgames.whack_a_toffel.app.game.GameActivity_;
 import de.kolbenschurzgames.whack_a_toffel.app.highscores.HighscoreActivity_;
-import org.junit.Assert;
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

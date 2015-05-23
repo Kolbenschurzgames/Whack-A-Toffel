@@ -12,11 +12,13 @@ import de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivit
 import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
 import org.androidannotations.annotations.*;
 
+import java.util.Date;
+
 @WindowFeature(Window.FEATURE_NO_TITLE)
 @EActivity
-public class GameActivity extends FragmentActivity {
+class GameActivity extends FragmentActivity {
 
-	private static final int DURATION_IN_MILLISECONDS = 5000;
+	private static final int DURATION_IN_MILLISECONDS = 10000;
 	private static final int TICK_INTERVAL = 1000;
 
 	CountDownTimer countDownTimer;
@@ -51,6 +53,7 @@ public class GameActivity extends FragmentActivity {
 				gameView.stopDrawing();
 				SubmitHighscoreActivity_.intent(GameActivity.this)
 						.extra("score", score)
+						.extra("endOfGame", new Date())
 						.start();
 			}
 		};
