@@ -83,7 +83,7 @@ class GameActivity extends FragmentActivity {
 		toffelManager.toffelTapped(field);
 		gameView.updateScore(score);
 
-		// play a massive Schoas here
+		// play sound here
 		soundManager.playRandomTapSound(this);
 	}
 }

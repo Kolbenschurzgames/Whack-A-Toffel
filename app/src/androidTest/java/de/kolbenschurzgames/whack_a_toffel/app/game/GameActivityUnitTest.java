@@ -6,6 +6,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivity_;
 import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
+import de.kolbenschurzgames.whack_a_toffel.app.sound.SoundManager;
+import de.kolbenschurzgames.whack_a_toffel.app.sound.SoundManager_;
+
 import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
@@ -32,7 +35,7 @@ import static org.robolectric.Robolectric.shadowOf;
  */
 @RunWith(RobolectricTestRunner.class)
 @PowerMockIgnore({"org.mockito.*", "org.robolectric.*", "android.*"})
-@PrepareForTest(ToffelManager_.class)
+@PrepareForTest({ToffelManager_.class, SoundManager_.class})
 public class GameActivityUnitTest {
 
 	@Rule
@@ -43,13 +46,19 @@ public class GameActivityUnitTest {
 
 	private View mockView;
 	private ToffelManager_ mockToffelManager;
+	private SoundManager_ mockSoundManager;
 
 	@Before
 	public void setUp() {
-		mockStatic(ToffelManager_.class);
+		mockStatic(ToffelManager_.class, SoundManager_.class);
+
 		mockView = mock(View.class);
+
 		mockToffelManager = PowerMockito.mock(ToffelManager_.class);
 		when(ToffelManager_.getInstance_(any(Context.class))).thenReturn(mockToffelManager);
+
+		mockSoundManager = PowerMockito.mock(SoundManager_.class);
+		when(SoundManager_.getInstance_(any(Context.class))).thenReturn(mockSoundManager);
 
 		gameActivity = setupActivity(GameActivity_.class);
 		shadowCountDownTimer = shadowOf(gameActivity.countDownTimer);
@@ -161,5 +170,29 @@ public class GameActivityUnitTest {
 		verify(mockToffelManager, times(2)).getTapResult(x, y);
 		verify(mockToffelManager).toffelTapped(tappedField);
 		Assert.assertEquals("1", gameActivity.gameView.getCurrentScore());
+	}
+
+	@Test
+	public void testSoundAfterTap() {
+		float x = 4.4f;
+		float y = 5.3f;
+		ToffelField tappedField = ToffelField.FIELD_TOP_LEFT;
+
+		MotionEvent actionDownEvent = mock(MotionEvent.class);
+		when(actionDownEvent.getAction()).thenReturn(MotionEvent.ACTION_DOWN);
+		when(actionDownEvent.getX()).thenReturn(x);
+		when(actionDownEvent.getY()).thenReturn(y);
+
+		MotionEvent actionUpEvent = mock(MotionEvent.class);
+		when(actionUpEvent.getAction()).thenReturn(MotionEvent.ACTION_UP);
+		when(actionUpEvent.getX()).thenReturn(x);
+		when(actionUpEvent.getY()).thenReturn(y);
+
+		when(mockToffelManager.getTapResult(x, y)).thenReturn(new ToffelTap(tappedField, true));
+
+		gameActivity.gameViewTouched(mockView, actionDownEvent);
+		gameActivity.gameViewTouched(mockView, actionUpEvent);
+
+		verify(mockSoundManager).playRandomTapSound(any(Context.class));
 	}
 }
