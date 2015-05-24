@@ -11,7 +11,7 @@ apply plugin: 'node'
 
 node {
     // Version of node to use.
-    version = '0.12.0'
+    version = '0.12.4'
 
     // Base URL for fetching node distributions (change if you have a mirror).
     distBaseUrl = 'http://nodejs.org/dist'
@@ -24,8 +24,15 @@ node {
     workDir = file("${project.buildDir}/nodejs")
 }
 
+task test(type: NodeTask) {
+    script = file('node_modules/mocha/bin/mocha')
+    args = ['--harmony', 'src/test']
+    environment = ['NODE_ENV': 'test', 'DEBUG': 'toffel*']
+}
+
 task integration(type: NodeTask) {
     script = file('node_modules/mocha/bin/mocha')
     args = ['--harmony', 'src/test/integration']
     environment = ['NODE_ENV': 'test', 'DEBUG': 'toffel*']
 }
+

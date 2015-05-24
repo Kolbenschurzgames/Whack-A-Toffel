@@ -36,5 +36,6 @@ android:
 #    - adb shell input keyevent 82 &
 
 script:
-    - ./gradlew clean build test
-    - ./run_server_tests.sh
+    - ./gradlew :app:clean :app:build :app:test
+    - ./gradlew :server:npmInstall :server:test
+    - ./gradlew :server:integration
