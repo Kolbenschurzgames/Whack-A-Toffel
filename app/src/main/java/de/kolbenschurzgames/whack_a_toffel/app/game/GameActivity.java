@@ -72,18 +72,15 @@ class GameActivity extends FragmentActivity {
     void gameViewTouched(View view, MotionEvent motionEvent) {
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
             lastTap = toffelManager.getTapResult(motionEvent.getX(), motionEvent.getY());
-        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP && lastTap.isTapped()) {
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
             ToffelTap upTap = toffelManager.getTapResult(motionEvent.getX(), motionEvent.getY());
-
-            if (upTap.equals(lastTap)) {
+            if (lastTap.isTapped() && upTap.equals(lastTap)) {
                 // Toffel was tapped
                 onToffelTapped(upTap.getField());
             } else {
                 // Toffel was not tapped
                 onToffelMissed();
             }
-        } else {
-            onToffelMissed();
         }
     }
 
