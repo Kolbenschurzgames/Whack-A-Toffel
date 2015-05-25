@@ -2,13 +2,20 @@ package de.kolbenschurzgames.whack_a_toffel.app.game;
 
 import android.content.Context;
 import android.content.Intent;
+<<<<<<< HEAD
 import android.os.CountDownTimer;
+=======
+import android.util.Log;
+>>>>>>> android
 import android.view.MotionEvent;
 import android.view.View;
+
 import de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivity_;
 import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
 import de.kolbenschurzgames.whack_a_toffel.app.sound.SoundManager_;
+
 import junit.framework.Assert;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -45,6 +52,16 @@ public class GameActivityUnitTest {
 
     private View mockView;
     private ToffelManager_ mockToffelManager;
+<<<<<<< HEAD
+
+    @Before
+    public void setUp() {
+        mockStatic(ToffelManager_.class);
+        mockView = mock(View.class);
+        mockToffelManager = PowerMockito.mock(ToffelManager_.class);
+        when(ToffelManager_.getInstance_(any(Context.class))).thenReturn(mockToffelManager);
+
+=======
     private SoundManager_ mockSoundManager;
 
     @Before
@@ -59,6 +76,7 @@ public class GameActivityUnitTest {
         mockSoundManager = PowerMockito.mock(SoundManager_.class);
         when(SoundManager_.getInstance_(any(Context.class))).thenReturn(mockSoundManager);
 
+>>>>>>> android
         gameActivity = setupActivity(GameActivity_.class);
         shadowCountDownTimer = shadowOf(gameActivity.countDownTimer);
     }
@@ -172,6 +190,30 @@ public class GameActivityUnitTest {
     }
 
     @Test
+<<<<<<< HEAD
+    public void stopDrawingOnPause() {
+        CountDownTimer mockCountDownTimer = mock(CountDownTimer.class);
+        gameActivity.countDownTimer = mockCountDownTimer;
+        GameView mockGameView = mock(GameView.class);
+        gameActivity.gameView = mockGameView;
+
+        gameActivity.onPause();
+
+        verify(mockCountDownTimer).cancel();
+        verify(mockGameView).stopDrawing();
+    }
+
+    @Test
+    public void startDrawingOnResume() {
+        GameView mockGameView = mock(GameView.class);
+        gameActivity.gameView = mockGameView;
+
+        gameActivity.onResume();
+
+        shadowCountDownTimer = shadowOf(gameActivity.countDownTimer);
+        Assert.assertTrue(shadowCountDownTimer.hasStarted());
+        verify(mockGameView).startDrawing();
+=======
     public void testSoundAfterSuccessfulTap() {
         float x = 4.4f;
         float y = 5.3f;
@@ -217,30 +259,6 @@ public class GameActivityUnitTest {
         gameActivity.gameViewTouched(mockView, actionUpEvent);
 
         verify(mockSoundManager).playToffelMissedSound(any(Context.class));
-    }
-
-    @Test
-    public void stopDrawingOnPause() {
-        CountDownTimer mockCountDownTimer = mock(CountDownTimer.class);
-        gameActivity.countDownTimer = mockCountDownTimer;
-        GameView mockGameView = mock(GameView.class);
-        gameActivity.gameView = mockGameView;
-
-        gameActivity.onPause();
-
-        verify(mockCountDownTimer).cancel();
-        verify(mockGameView).stopDrawing();
-    }
-
-    @Test
-    public void startDrawingOnResume() {
-        GameView mockGameView = mock(GameView.class);
-        gameActivity.gameView = mockGameView;
-
-        gameActivity.onResume();
-
-        shadowCountDownTimer = shadowOf(gameActivity.countDownTimer);
-        Assert.assertTrue(shadowCountDownTimer.hasStarted());
-        verify(mockGameView).startDrawing();
+>>>>>>> android
     }
 }

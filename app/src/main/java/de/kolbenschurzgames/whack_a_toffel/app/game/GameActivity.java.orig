@@ -8,23 +8,35 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+
 import de.kolbenschurzgames.whack_a_toffel.app.R;
 import de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivity_;
 import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
-import de.kolbenschurzgames.whack_a_toffel.app.sound.SoundManager;
+<<<<<<< HEAD
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Touch;
 import org.androidannotations.annotations.WindowFeature;
+=======
+import de.kolbenschurzgames.whack_a_toffel.app.sound.SoundManager;
+
+import org.androidannotations.annotations.*;
+>>>>>>> android
 
 import java.util.Date;
+import java.util.Random;
 
 @WindowFeature(Window.FEATURE_NO_TITLE)
 @EActivity
 class GameActivity extends FragmentActivity {
 
+<<<<<<< HEAD
     private static final long DEFAULT_DURATION_IN_MILLISECONDS = 15 * 1000;
     private static final short TICK_INTERVAL = 1 * 1000;
+=======
+    private static final int DURATION_IN_MILLISECONDS = 1000 * 10;
+    private static final int TICK_INTERVAL = 1000;
+>>>>>>> android
 
     CountDownTimer countDownTimer;
 
@@ -33,12 +45,17 @@ class GameActivity extends FragmentActivity {
     @Bean
     ToffelManager toffelManager;
 
+<<<<<<< HEAD
+    private ToffelTap lastTap;
+    private int score;
+    private long timerDurationLeft = DEFAULT_DURATION_IN_MILLISECONDS;
+=======
     @Bean
     SoundManager soundManager;
 
     private ToffelTap lastTap;
     private int score;
-    private long timerDurationLeft = DEFAULT_DURATION_IN_MILLISECONDS;
+>>>>>>> android
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +64,7 @@ class GameActivity extends FragmentActivity {
         setContentView(gameView);
     }
 
+<<<<<<< HEAD
     @Override
     protected void onPause() {
         super.onPause();
@@ -70,6 +88,14 @@ class GameActivity extends FragmentActivity {
             @Override
             public void onTick(long millisUntilFinished) {
                 timerDurationLeft = millisUntilFinished;
+=======
+    @AfterViews
+    void initCountdownTimer() {
+        countDownTimer = new CountDownTimer(DURATION_IN_MILLISECONDS, TICK_INTERVAL) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+>>>>>>> android
                 gameView.updateTimer(Long.toString(millisUntilFinished / 1000));
             }
 
@@ -83,6 +109,11 @@ class GameActivity extends FragmentActivity {
                         .start();
             }
         };
+<<<<<<< HEAD
+=======
+
+        countDownTimer.start();
+>>>>>>> android
     }
 
     @Touch(R.id.game_view_id)
@@ -91,6 +122,11 @@ class GameActivity extends FragmentActivity {
             lastTap = toffelManager.getTapResult(motionEvent.getX(), motionEvent.getY());
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP && lastTap.isTapped()) {
             ToffelTap upTap = toffelManager.getTapResult(motionEvent.getX(), motionEvent.getY());
+<<<<<<< HEAD
+            if (upTap.equals(lastTap)) {
+                onToffelTapped(upTap.getField());
+            }
+=======
 
             if (upTap.equals(lastTap)) {
                 // Toffel was tapped
@@ -101,6 +137,7 @@ class GameActivity extends FragmentActivity {
             }
         } else {
             onToffelMissed();
+>>>>>>> android
         }
     }
 
@@ -108,12 +145,7 @@ class GameActivity extends FragmentActivity {
         ++score;
         toffelManager.toffelTapped(field);
         gameView.updateScore(score);
-
-        soundManager.playToffelTappedSound(this);
-    }
-
-    private void onToffelMissed() {
-        soundManager.playToffelMissedSound(this);
+<<<<<<< HEAD
     }
 
     @Override
@@ -121,5 +153,13 @@ class GameActivity extends FragmentActivity {
         super.onBackPressed();
         countDownTimer.cancel();
         NavUtils.navigateUpFromSameTask(this);
+=======
+
+        soundManager.playToffelTappedSound(this);
+    }
+
+    private void onToffelMissed() {
+        soundManager.playToffelMissedSound(this);
+>>>>>>> android
     }
 }
