@@ -15,19 +15,24 @@ import java.util.Random;
 @EBean(scope = EBean.Scope.Singleton)
 public class SoundManager {
 
-    private final static List<TapSound> SOUNDS = Arrays.asList(TapSound.values());
-    private static final int SIZE = SOUNDS.size();
-    private static final Random RANDOM = new Random();
+    private final static List<TapMissedSound> TAPMISSED_SOUNDS = Arrays.asList(TapMissedSound.values());
+    private final static int TAPMISSED_SOUNDS_SIZE = TAPMISSED_SOUNDS.size();
 
-    public void playRandomTapSound(Context context) {
+    private final static Random RANDOM = new Random();
 
-        TapSound tapSound = SOUNDS.get(RANDOM.nextInt(SIZE));
+    public void playToffelTappedSound(Context context) {
 
-        playSound(context, tapSound.getIdentifier());
+        if (RANDOM.nextBoolean()) {
+            playSound(context, TapSound.SCHOAS.getIdentifier());
+        }
+    }
+
+    public void playToffelMissedSound(Context context) {
+        TapMissedSound sound = TAPMISSED_SOUNDS.get(RANDOM.nextInt(TAPMISSED_SOUNDS_SIZE));
+        playSound(context, sound.getIdentifier());
     }
 
     private void playSound(Context context, int id) {
-
         MediaPlayer mediaPlayer = MediaPlayer.create(context, id);
         mediaPlayer.start();
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
