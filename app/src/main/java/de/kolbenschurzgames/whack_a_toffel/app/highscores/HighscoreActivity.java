@@ -1,6 +1,7 @@
 package de.kolbenschurzgames.whack_a_toffel.app.highscores;
 
 import android.app.Activity;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,91 +28,101 @@ import java.util.List;
 @EActivity(R.layout.activity_highscores)
 public class HighscoreActivity extends Activity implements WebServiceCallback<Highscore> {
 
-	@ViewById(R.id.highscores_text_view)
-	TextView textView;
-	@ViewById(R.id.highscores_table)
-	TableLayout highscoresTable;
-	@ViewById(R.id.highscores_progress)
-	ProgressBar progressBar;
-	@Bean
-	WebServiceHelper webServiceHelper;
+    @ViewById(R.id.highscores_text_view)
+    TextView textView;
 
-	@StringRes(R.string.no_connection)
-	String noConnectionString;
-	@StringRes(R.string.load_highscores_error)
-	String loadHighscoresErrorString;
+    @ViewById(R.id.highscores_table)
+    TableLayout highscoresTable;
 
-	private LayoutInflater inflater;
+    @ViewById(R.id.highscores_progress)
+    ProgressBar progressBar;
 
-	@AfterViews
-	protected void init() {
-		inflater = getLayoutInflater();
-		if (NetworkUtils.isConnectionAvailable(this)) {
-			fetchHighscores();
-		} else {
-			displayError(noConnectionString);
-		}
-	}
+    @Bean
+    WebServiceHelper webServiceHelper;
 
-	@Background
-	void fetchHighscores() {
-		webServiceHelper.getListOfHighscores(this);
-	}
+    @StringRes(R.string.no_connection)
+    String noConnectionString;
 
-	@Override
-	public void onResultListReceived(List<Highscore> highscores) {
-		sortHighscoresDescending(highscores);
-		displayHighscores(highscores);
-	}
+    @StringRes(R.string.load_highscores_error)
+    String loadHighscoresErrorString;
 
-	private void sortHighscoresDescending(List<Highscore> highscores) {
-		Collections.sort(highscores, Collections.reverseOrder());
-	}
+    private LayoutInflater inflater;
 
-	@Override
-	public void onError(Error e) {
-		Log.e("Highscores", e.getMessage(), e);
-		displayError(loadHighscoresErrorString);
-	}
+    @AfterViews
+    protected void init() {
+        inflater = getLayoutInflater();
+        if (NetworkUtils.isConnectionAvailable(this)) {
+            fetchHighscores();
+        } else {
+            displayError(noConnectionString);
+        }
+    }
 
-	@UiThread
-	void displayError(String errorMsg) {
-		highscoresTable.setVisibility(View.INVISIBLE);
-		progressBar.setVisibility(View.GONE);
-		textView.setText(errorMsg);
-		textView.setVisibility(View.VISIBLE);
-	}
+    @Background
+    void fetchHighscores() {
+        webServiceHelper.getListOfHighscores(this);
+    }
 
-	@UiThread
-	void displayHighscores(List<Highscore> highscores) {
-		progressBar.setVisibility(View.GONE);
-		textView.setVisibility(View.INVISIBLE);
-		highscoresTable.setVisibility(View.VISIBLE);
+    @Override
+    public void onResultListReceived(List<Highscore> highscores) {
+        sortHighscoresDescending(highscores);
+        displayHighscores(highscores);
+    }
 
-		populateHighscoresTable(highscores);
-	}
+    private void sortHighscoresDescending(List<Highscore> highscores) {
+        Collections.sort(highscores, Collections.reverseOrder());
+    }
 
-	private void populateHighscoresTable(List<Highscore> highscores) {
-		for (int i = 0; i < highscores.size(); i++) {
-			Highscore highscore = highscores.get(i);
-			TableRow row = buildHighscoreTableRow(highscore);
-			highscoresTable.addView(row, i + 1);
-		}
-	}
+    @Override
+    public void onError(Error e) {
+        Log.e("Highscores", e.getMessage(), e);
+        displayError(loadHighscoresErrorString);
+    }
 
-	private TableRow buildHighscoreTableRow(Highscore highscore) {
-		TableRow row = (TableRow) inflater.inflate(R.layout.table_row_highscore, null);
-		((TextView) row.getChildAt(0)).setText(highscore.getName());
-		((TextView) row.getChildAt(1)).setText(Integer.toString(highscore.getScore()));
-		((TextView) row.getChildAt(2)).setText(buildLocalizedDateTimeString(highscore.getDate()));
-		return row;
-	}
+    @UiThread
+    void displayError(String errorMsg) {
+        highscoresTable.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.GONE);
+        textView.setText(errorMsg);
+        textView.setVisibility(View.VISIBLE);
+    }
 
-	String buildLocalizedDateTimeString(Date date) {
-		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this);
-		DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(this);
-		String dateString = dateFormat.format(date);
-		String timeString = timeFormat.format(date);
-		return dateString + " " + timeString;
-	}
+    @UiThread
+    void displayHighscores(List<Highscore> highscores) {
+        progressBar.setVisibility(View.GONE);
+        textView.setVisibility(View.INVISIBLE);
+        highscoresTable.setVisibility(View.VISIBLE);
+
+        populateHighscoresTable(highscores);
+    }
+
+    private void populateHighscoresTable(List<Highscore> highscores) {
+        for (int i = 0; i < highscores.size(); i++) {
+            Highscore highscore = highscores.get(i);
+            TableRow row = buildHighscoreTableRow(highscore);
+            highscoresTable.addView(row, i + 1);
+        }
+    }
+
+    private TableRow buildHighscoreTableRow(Highscore highscore) {
+        TableRow row = (TableRow) inflater.inflate(R.layout.table_row_highscore, null);
+        ((TextView) row.getChildAt(0)).setText(highscore.getName());
+        ((TextView) row.getChildAt(1)).setText(Integer.toString(highscore.getScore()));
+        ((TextView) row.getChildAt(2)).setText(buildLocalizedDateTimeString(highscore.getDate()));
+        return row;
+    }
+
+    String buildLocalizedDateTimeString(Date date) {
+        DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this);
+        DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(this);
+        String dateString = dateFormat.format(date);
+        String timeString = timeFormat.format(date);
+        return dateString + " " + timeString;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        NavUtils.navigateUpFromSameTask(this);
+    }
 }

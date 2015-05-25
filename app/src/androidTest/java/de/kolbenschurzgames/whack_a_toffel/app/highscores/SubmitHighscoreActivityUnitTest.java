@@ -2,6 +2,7 @@ package de.kolbenschurzgames.whack_a_toffel.app.highscores;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NavUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import de.kolbenschurzgames.whack_a_toffel.app.MainActivity_;
@@ -36,10 +37,12 @@ import static org.robolectric.Robolectric.shadowOf;
 @PrepareForTest(WebServiceHelper_.class)
 public class SubmitHighscoreActivityUnitTest {
 
-	private final int testScore = 100;
-	private final Date testDate = new Date();
 	@Rule
 	public PowerMockRule powerMockRule = new PowerMockRule();
+
+	private final int testScore = 100;
+	private final Date testDate = new Date();
+
 	private SubmitHighscoreActivity_ submitHighscoreActivity;
 
 	private WebServiceHelper_ mockWebServiceHelper;
@@ -89,7 +92,7 @@ public class SubmitHighscoreActivityUnitTest {
 	}
 
 	@Test
-	public void submitErrorLaunchesHighscoreActivivity() {
+	public void submitErrorLaunchesHighscoreActivity() {
 		ArgumentCaptor<WebServiceCallback> callbackCaptor = ArgumentCaptor.forClass(WebServiceCallback.class);
 
 		Button submitButton = (Button) submitHighscoreActivity.findViewById(R.id.button_submit);
@@ -100,15 +103,6 @@ public class SubmitHighscoreActivityUnitTest {
 
 		callbackCaptor.getValue().onError(new Error());
 		assertHighscoreActivityLaunched();
-	}
-
-	@Test
-	public void skipButtonLaunchesMainActivivity() {
-		Button skipButton = (Button) submitHighscoreActivity.findViewById(R.id.button_skip);
-		skipButton.performClick();
-
-		Intent expectedIntent = new Intent(submitHighscoreActivity, MainActivity_.class);
-		Assert.assertEquals(expectedIntent, shadowOf(submitHighscoreActivity).getNextStartedActivity());
 	}
 
 	private void assertHighscoreActivityLaunched() {
