@@ -140,7 +140,7 @@ public class GameActivityUnitTest {
         gameActivity.gameViewTouched(mockView, actionDownEvent);
         gameActivity.gameViewTouched(mockView, actionUpEvent);
 
-        verify(mockToffelManager, times(1)).getTapResult(x, y);
+        verify(mockToffelManager, times(2)).getTapResult(x, y);
         verify(mockToffelManager, never()).toffelTapped(tappedField);
         Assert.assertEquals("0", gameActivity.gameView.getCurrentScore());
     }
