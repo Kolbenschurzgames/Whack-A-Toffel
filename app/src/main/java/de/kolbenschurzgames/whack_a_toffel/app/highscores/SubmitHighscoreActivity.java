@@ -88,7 +88,12 @@ public class SubmitHighscoreActivity extends Activity implements WebServiceCallb
 
     @Override
     public void onResultListReceived(List<Highscore> results) {
-        launchHighscoreActivity();
+        if (results.size() == 1) {
+            launchHighscoreActivityWithHighlightedHighscore(results.get(0));
+        } else {
+            Log.w("submit highscore", "Unexpected response list length from backend. Can't highlight submitted highscore");
+            launchHighscoreActivity();
+        }
     }
 
     @Override
@@ -98,10 +103,23 @@ public class SubmitHighscoreActivity extends Activity implements WebServiceCallb
     }
 
     @UiThread
+    void launchHighscoreActivityWithHighlightedHighscore(Highscore highscore) {
+        dismissProgressDialogIfShowing();
+        HighscoreActivity_.intent(SubmitHighscoreActivity.this)
+                .extra("highlight", highscore.getId())
+                .start();
+    }
+
+    @UiThread
     void launchHighscoreActivity() {
+        dismissProgressDialogIfShowing();
+        HighscoreActivity_.intent(SubmitHighscoreActivity.this)
+                .start();
+    }
+
+    private void dismissProgressDialogIfShowing() {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
-        HighscoreActivity_.intent(SubmitHighscoreActivity.this).start();
     }
 }

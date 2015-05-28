@@ -54,6 +54,7 @@ public class WebServiceHelperUnitTest {
 	@Before
 	public void setUp() {
 		mockStatic(RequestQueueSingleton.class);
+        mockStatic(Highscore.class);
 		Context mockContext = mock(Context.class);
 		mockRequestQueueSingleton = PowerMockito.mock(RequestQueueSingleton.class);
 		when(RequestQueueSingleton.getInstance(any(Context.class))).thenReturn(mockRequestQueueSingleton);
@@ -86,7 +87,6 @@ public class WebServiceHelperUnitTest {
 	@Test
 	public void testParseContentError() throws Exception {
 		JSONArray responseArray = new JSONArray();
-		mockStatic(Highscore.class);
 		when(Highscore.parseJsonArrayToList(responseArray)).thenThrow(new JSONException("error"));
 
 		webServiceHelper.getListOfHighscores(new WebServiceCallback<Highscore>() {
@@ -117,8 +117,8 @@ public class WebServiceHelperUnitTest {
 		JSONArray responseArray = new JSONArray();
 		final List<Highscore> highscores = new ArrayList<Highscore>();
 		highscores.add(new Highscore("name", 100, new Date()));
+		highscores.add(new Highscore("name2", 200, new Date()));
 
-		mockStatic(Highscore.class);
 		when(Highscore.parseJsonArrayToList(responseArray)).thenReturn(highscores);
 
 		webServiceHelper.getListOfHighscores(new WebServiceCallback<Highscore>() {
@@ -160,10 +160,10 @@ public class WebServiceHelperUnitTest {
 
 		verify(highscoreMock, times(1)).toJSON();
 
-		ArgumentCaptor<JsonObjectRequest> argCaptor = ArgumentCaptor.forClass(JsonObjectRequest.class);
+		ArgumentCaptor<JsonArrayRequest> argCaptor = ArgumentCaptor.forClass(JsonArrayRequest.class);
 		verify(mockRequestQueueSingleton).addToRequestQueue(argCaptor.capture());
 
-		JsonObjectRequest request = argCaptor.getValue();
+		JsonArrayRequest request = argCaptor.getValue();
 		Assert.assertEquals(Request.Method.POST, request.getMethod());
 
 		request.deliverError(new VolleyError("error"));
@@ -172,7 +172,8 @@ public class WebServiceHelperUnitTest {
 	@Test
 	public void testParseHighscoreError() throws Exception {
 		when(highscoreMock.toJSON()).thenThrow(new JSONException("error"));
-		webServiceHelper.submitHighscore(highscoreMock, new WebServiceCallback<Highscore>() {
+
+        webServiceHelper.submitHighscore(highscoreMock, new WebServiceCallback<Highscore>() {
 			@Override
 			public void onResultListReceived(List<Highscore> results) {
 				fail("Result callback should not have been triggered");
@@ -191,10 +192,17 @@ public class WebServiceHelperUnitTest {
 
 	@Test
 	public void testSubmitSuccessful() throws Exception {
+		JSONArray responseArray = new JSONArray();
+        final List<Highscore> highscores = new ArrayList<Highscore>();
+        highscores.add(new Highscore("test", 1, new Date()));
+        highscores.add(new Highscore("test2", 2, new Date()));
+
+        when(Highscore.parseJsonArrayToList(responseArray)).thenReturn(highscores);
+
 		webServiceHelper.submitHighscore(highscoreMock, new WebServiceCallback<Highscore>() {
 			@Override
 			public void onResultListReceived(List<Highscore> results) {
-				Assert.assertEquals(highscoreMock, results.get(0));
+				Assert.assertEquals(highscores, results);
 			}
 
 			@Override
@@ -205,15 +213,15 @@ public class WebServiceHelperUnitTest {
 
 		verify(highscoreMock, times(1)).toJSON();
 
-		ArgumentCaptor<JsonObjectRequest> argCaptor = ArgumentCaptor.forClass(JsonObjectRequest.class);
+		ArgumentCaptor<JsonArrayRequest> argCaptor = ArgumentCaptor.forClass(JsonArrayRequest.class);
 		verify(mockRequestQueueSingleton).addToRequestQueue(argCaptor.capture());
 
-		JsonObjectRequest request = argCaptor.getValue();
+		JsonArrayRequest request = argCaptor.getValue();
 		Assert.assertEquals(Request.Method.POST, request.getMethod());
 
 		// Workaround because JsonRequest.deliverResponse is not public (unlike deliverError)
 		Method deliverResponse = JsonRequest.class.getDeclaredMethod("deliverResponse", Object.class);
 		deliverResponse.setAccessible(true);
-		deliverResponse.invoke(request, new JSONObject());
+		deliverResponse.invoke(request, responseArray);
 	}
 }

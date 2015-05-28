@@ -6,7 +6,8 @@ import java.util.List;
  * Created by alfriedl on 08.11.14.
  */
 public interface WebServiceCallback<T> {
-	public void onResultListReceived(List<T> results);
 
-	public void onError(Error e);
+    void onResultListReceived(List<T> results);
+
+    void onError(Error e);
 }
