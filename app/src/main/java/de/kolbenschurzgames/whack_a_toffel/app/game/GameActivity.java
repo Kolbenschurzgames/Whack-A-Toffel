@@ -11,7 +11,9 @@ import android.view.Window;
 import de.kolbenschurzgames.whack_a_toffel.app.R;
 import de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivity_;
 import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
-import de.kolbenschurzgames.whack_a_toffel.app.sound.SoundManager;
+import de.kolbenschurzgames.whack_a_toffel.app.sound.GameSound;
+import de.kolbenschurzgames.whack_a_toffel.app.sound.SoundUtil;
+
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Touch;
@@ -34,7 +36,10 @@ class GameActivity extends FragmentActivity {
     ToffelManager toffelManager;
 
     @Bean
-    SoundManager soundManager;
+    SoundUtil soundManager;
+
+    @Bean
+    GameSound gameSound;
 
     private ToffelTap lastTap;
     private int score;
@@ -45,6 +50,9 @@ class GameActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         gameView = new GameView_(this);
         setContentView(gameView);
+
+        gameSound.start(this);
+
     }
 
     @Override
@@ -54,6 +62,8 @@ class GameActivity extends FragmentActivity {
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
+
+        gameSound.stop();
     }
 
     @Override

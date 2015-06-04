@@ -5,10 +5,9 @@ import android.content.Intent;
 import android.os.CountDownTimer;
 import android.view.MotionEvent;
 import android.view.View;
-import de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivity_;
-import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
-import de.kolbenschurzgames.whack_a_toffel.app.sound.SoundManager_;
+
 import junit.framework.Assert;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,8 +22,19 @@ import org.robolectric.shadows.ShadowCountDownTimer;
 
 import java.util.Date;
 
+import de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivity_;
+import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
+import de.kolbenschurzgames.whack_a_toffel.app.sound.GameSound_;
+import de.kolbenschurzgames.whack_a_toffel.app.sound.SoundUtil_;
+
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.robolectric.Robolectric.setupActivity;
 import static org.robolectric.Robolectric.shadowOf;
@@ -34,7 +44,7 @@ import static org.robolectric.Robolectric.shadowOf;
  */
 @RunWith(RobolectricTestRunner.class)
 @PowerMockIgnore({"org.mockito.*", "org.robolectric.*", "android.*"})
-@PrepareForTest({ToffelManager_.class, SoundManager_.class})
+@PrepareForTest({ToffelManager_.class, SoundUtil_.class, GameSound_.class})
 public class GameActivityUnitTest {
 
     @Rule
@@ -45,22 +55,31 @@ public class GameActivityUnitTest {
 
     private View mockView;
     private ToffelManager_ mockToffelManager;
-    private SoundManager_ mockSoundManager;
+    private SoundUtil_ mockSoundManager;
+
+    private GameSound_ mockGameSound;
+
 
     @Before
     public void setUp() {
-        mockStatic(ToffelManager_.class, SoundManager_.class);
+        mockStatic(ToffelManager_.class, SoundUtil_.class, GameSound_.class);
 
         mockView = mock(View.class);
 
         mockToffelManager = PowerMockito.mock(ToffelManager_.class);
         when(ToffelManager_.getInstance_(any(Context.class))).thenReturn(mockToffelManager);
 
-        mockSoundManager = PowerMockito.mock(SoundManager_.class);
-        when(SoundManager_.getInstance_(any(Context.class))).thenReturn(mockSoundManager);
+        mockSoundManager = PowerMockito.mock(SoundUtil_.class);
+        when(SoundUtil_.getInstance_(any(Context.class))).thenReturn(mockSoundManager);
+
+        mockGameSound = PowerMockito.mock(GameSound_.class);
+        when(GameSound_.getInstance_(any(Context.class))).thenReturn(mockGameSound);
 
         gameActivity = setupActivity(GameActivity_.class);
         shadowCountDownTimer = shadowOf(gameActivity.countDownTimer);
+
+        doNothing().when(mockGameSound).stop();
+        doNothing().when(mockGameSound).start(any(Context.class));
     }
 
     @After
@@ -242,5 +261,16 @@ public class GameActivityUnitTest {
         shadowCountDownTimer = shadowOf(gameActivity.countDownTimer);
         Assert.assertTrue(shadowCountDownTimer.hasStarted());
         verify(mockGameView).startDrawing();
+    }
+
+    @Test
+    public void soundStartsOnStartup() {
+        verify(mockGameSound).start(any(Context.class));
+    }
+
+    @Test
+    public void soundStopsOnPause() {
+        gameActivity.onPause();
+        verify(mockGameSound).stop();
     }
 }
