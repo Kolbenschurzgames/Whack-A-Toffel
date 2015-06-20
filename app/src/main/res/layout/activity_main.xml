@@ -1,30 +1,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			  xmlns:tools="http://schemas.android.com/tools"
-			  android:layout_width="match_parent"
-			  android:layout_height="match_parent"
-			  android:layout_marginLeft="5dip"
-			  android:layout_marginStart="5dip"
-			  android:orientation="vertical"
-			  tools:context="${packageName}.${activityClass}">
-
-	<TextView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:padding="10dip"
-		android:text="@string/app_name"
-		android:textSize="20sp"
-		android:textStyle="bold"/>
-
-	<Button
-		android:id="@+id/button_start_game"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/startGame"/>
-
-	<Button
-		android:id="@+id/button_highscores"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/highscores"/>
-
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:paddingTop="350dp"
+              android:background="@drawable/main_gradient"
+              tools:context="${packageName}.${activityClass}">
+    <Button
+            android:id="@+id/button_start_game"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/main_button"
+            android:drawableStart="@drawable/button_icon"
+            android:drawableLeft="@drawable/button_icon"
+            android:text="@string/startGame"
+            android:textColor="#000"/>
+    <Button
+            android:id="@+id/button_highscores"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/main_button"
+            android:drawableEnd="@drawable/button_icon"
+            android:drawableRight="@drawable/button_icon"
+            android:text="@string/highscores"
+            android:textColor="#000"/>
 </LinearLayout>

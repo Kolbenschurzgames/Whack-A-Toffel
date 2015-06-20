@@ -4,7 +4,7 @@
 	<string name="app_name">Tap-A-Tato</string>
 	<string name="startGame">Start Game</string>
 
-	<string name="title_activity_highscores">Highscores</string>
+	<string name="title_activity_highscores">Scores</string>
 	<string name="loading_highscores">Loading Highscores …</string>
 	<string name="highscores">Highscores</string>
 	<string name="load_highscores_error">Failed to retrieve highscores</string>
