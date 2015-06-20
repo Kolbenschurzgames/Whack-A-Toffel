@@ -2,7 +2,7 @@
 <resources>
 
 	<string name="app_name">Tap-A-Toffel</string>
-	<string name="startGame">Spiel starten</string>
+	<string name="startGame">Toffeln</string>
 
 	<string name="title_activity_highscores">Highscores</string>
 	<string name="loading_highscores">Lade Highscores …</string>
