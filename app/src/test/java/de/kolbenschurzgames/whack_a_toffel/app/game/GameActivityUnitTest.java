@@ -5,44 +5,39 @@ import android.content.Intent;
 import android.os.CountDownTimer;
 import android.view.MotionEvent;
 import android.view.View;
-
+import de.kolbenschurzgames.whack_a_toffel.app.BuildConfig;
+import de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivity_;
+import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
+import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelTap;
+import de.kolbenschurzgames.whack_a_toffel.app.sound.GameSound_;
+import de.kolbenschurzgames.whack_a_toffel.app.sound.SoundUtil_;
 import junit.framework.Assert;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.Shadows;
+import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowCountDownTimer;
 
 import java.util.Date;
 
-import de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivity_;
-import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
-import de.kolbenschurzgames.whack_a_toffel.app.sound.GameSound_;
-import de.kolbenschurzgames.whack_a_toffel.app.sound.SoundUtil_;
-
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.robolectric.Robolectric.setupActivity;
-import static org.robolectric.Robolectric.shadowOf;
 
 /**
  * Created by alfriedl on 25.01.15.
  */
-@RunWith(RobolectricTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class)
 @PowerMockIgnore({"org.mockito.*", "org.robolectric.*", "android.*"})
 @PrepareForTest({ToffelManager_.class, SoundUtil_.class, GameSound_.class})
 public class GameActivityUnitTest {
@@ -51,40 +46,38 @@ public class GameActivityUnitTest {
     public PowerMockRule powerMockRule = new PowerMockRule();
 
     private GameActivity_ gameActivity;
+
     private ShadowCountDownTimer shadowCountDownTimer;
 
+    @Mock
     private View mockView;
+
+    @Mock
     private ToffelManager_ mockToffelManager;
+
+    @Mock
     private SoundUtil_ mockSoundManager;
 
+    @Mock
     private GameSound_ mockGameSound;
-
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
+
         mockStatic(ToffelManager_.class, SoundUtil_.class, GameSound_.class);
 
-        mockView = mock(View.class);
-
-        mockToffelManager = PowerMockito.mock(ToffelManager_.class);
         when(ToffelManager_.getInstance_(any(Context.class))).thenReturn(mockToffelManager);
 
-        mockSoundManager = PowerMockito.mock(SoundUtil_.class);
         when(SoundUtil_.getInstance_(any(Context.class))).thenReturn(mockSoundManager);
 
-        mockGameSound = PowerMockito.mock(GameSound_.class);
         when(GameSound_.getInstance_(any(Context.class))).thenReturn(mockGameSound);
 
-        gameActivity = setupActivity(GameActivity_.class);
-        shadowCountDownTimer = shadowOf(gameActivity.countDownTimer);
+        gameActivity = Robolectric.buildActivity(GameActivity_.class).create().start().get();
+        gameActivity.gameView = mock(GameView.class);
+        gameActivity.onResume();
 
-        doNothing().when(mockGameSound).stop();
-        doNothing().when(mockGameSound).start(any(Context.class));
-    }
-
-    @After
-    public void tearDown() {
-        reset(mockToffelManager);
+        shadowCountDownTimer = Shadows.shadowOf(gameActivity.countDownTimer);
     }
 
     @Test
@@ -101,7 +94,7 @@ public class GameActivityUnitTest {
     @Test
     public void testSubmitHighscoreActivityLaunchedAfterTimerExpired() {
         shadowCountDownTimer.invokeFinish();
-        Intent startedActivityIntent = shadowOf(gameActivity).getNextStartedActivity();
+        Intent startedActivityIntent = Shadows.shadowOf(gameActivity).getNextStartedActivity();
 
         Assert.assertEquals(SubmitHighscoreActivity_.class.getName(), startedActivityIntent.getComponent().getClassName());
         Assert.assertEquals(0, startedActivityIntent.getExtras().get("score"));
@@ -135,7 +128,6 @@ public class GameActivityUnitTest {
         verify(mockToffelManager).getTapResult(upEventX, upEventY);
 
         verify(mockToffelManager, never()).toffelTapped(any(ToffelField.class));
-        Assert.assertEquals("0", gameActivity.gameView.getCurrentScore());
     }
 
     @Test
@@ -161,7 +153,6 @@ public class GameActivityUnitTest {
 
         verify(mockToffelManager, times(2)).getTapResult(x, y);
         verify(mockToffelManager, never()).toffelTapped(tappedField);
-        Assert.assertEquals("0", gameActivity.gameView.getCurrentScore());
     }
 
     @Test
@@ -187,7 +178,6 @@ public class GameActivityUnitTest {
 
         verify(mockToffelManager, times(2)).getTapResult(x, y);
         verify(mockToffelManager).toffelTapped(tappedField);
-        Assert.assertEquals("1", gameActivity.gameView.getCurrentScore());
     }
 
     @Test
@@ -258,7 +248,7 @@ public class GameActivityUnitTest {
 
         gameActivity.onResume();
 
-        shadowCountDownTimer = shadowOf(gameActivity.countDownTimer);
+        shadowCountDownTimer = Shadows.shadowOf(gameActivity.countDownTimer);
         Assert.assertTrue(shadowCountDownTimer.hasStarted());
         verify(mockGameView).startDrawing();
     }

@@ -1,25 +1,23 @@
-package de.kolbenschurzgames.whack_a_toffel.app.game;
-
-import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
+package de.kolbenschurzgames.whack_a_toffel.app.model;
 
 /**
  * Created by alfriedl on 13.02.15.
  */
-final class ToffelTap {
+public final class ToffelTap {
 
 	private ToffelField field;
 	private boolean tapped;
 
-	ToffelTap(ToffelField field, boolean tapped) {
+	public ToffelTap(ToffelField field, boolean tapped) {
 		this.field = field;
 		this.tapped = tapped;
 	}
 
-	ToffelField getField() {
+	public ToffelField getField() {
 		return field;
 	}
 
-	boolean isTapped() {
+	public boolean isTapped() {
 		return tapped;
 	}
 
