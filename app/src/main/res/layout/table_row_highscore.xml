@@ -8,6 +8,10 @@
 
 	<TextView
 		android:padding="5dip"
+		android:text="@string/position"/>
+
+	<TextView
+		android:padding="5dip"
 		android:text="@string/player"/>
 
 	<TextView
