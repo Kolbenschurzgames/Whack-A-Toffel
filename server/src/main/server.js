@@ -9,19 +9,19 @@ module.exports = (function() {
     var db = new Database(dbName);
 
     var koa = require('koa');
-    var router = require('koa-router');
+    var router = require('koa-router')();
     var koaBody = require('koa-body')();
     var app = koa();
 
     var serverPort = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
-    app.use(router(app));
+    app.use(router.routes());
 
-	app.get('/highscore', function *() {
+	router.get('/highscore', function *() {
 		this.body = yield db.getHighscores();
 	});
 
-    app.post('/highscore', koaBody, function *() {
+    router.post('/highscore', koaBody, function *() {
         var highscore = this.request.body;
 
         if (validator.isValidHighscore(highscore)) {
