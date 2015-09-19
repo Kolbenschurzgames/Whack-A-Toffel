@@ -2,31 +2,33 @@ package de.kolbenschurzgames.whack_a_toffel.app.highscores;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import de.kolbenschurzgames.whack_a_toffel.app.BuildConfig;
 import de.kolbenschurzgames.whack_a_toffel.app.R;
 import de.kolbenschurzgames.whack_a_toffel.app.model.Highscore;
 import de.kolbenschurzgames.whack_a_toffel.app.network.NetworkUtils;
 import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceCallback;
 import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceHelper_;
 import junit.framework.Assert;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.powermock.api.mockito.PowerMockito;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
-import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowApplication;
 
 import java.util.*;
 
@@ -38,8 +40,9 @@ import static org.robolectric.Robolectric.setupActivity;
 /**
  * Created by alfriedl on 26.09.14.
  */
-@RunWith(RobolectricTestRunner.class)
-@PowerMockIgnore({"org.robolectric.*", "android.*"})
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class)
+@PowerMockIgnore({"org.robolectric.*", "android.*", "org.mockito.*"})
 @PrepareForTest({NetworkUtils.class, WebServiceHelper_.class})
 public class HighscoreActivityUnitTest {
 
@@ -52,19 +55,18 @@ public class HighscoreActivityUnitTest {
     private ProgressBar progressBar;
     private TableLayout highscoresTable;
 
+    @Mock
     private WebServiceHelper_ mockWebServiceHelper;
+
+    @Captor
+    private ArgumentCaptor<WebServiceCallback> callbackCaptor;
 
     @Before
     public void setUp() {
-        mockWebServiceHelper = PowerMockito.mock(WebServiceHelper_.class);
+        MockitoAnnotations.initMocks(this);
         mockStatic(NetworkUtils.class);
         mockStatic(WebServiceHelper_.class);
         when(WebServiceHelper_.getInstance_(any(Context.class))).thenReturn(mockWebServiceHelper);
-    }
-
-    @After
-    public void tearDown() {
-        reset(mockWebServiceHelper);
     }
 
     @Test
@@ -91,7 +93,6 @@ public class HighscoreActivityUnitTest {
         when(NetworkUtils.isConnectionAvailable(any(Context.class))).thenReturn(true);
         highscoreActivity = setupActivity(HighscoreActivity_.class);
 
-        ArgumentCaptor<WebServiceCallback> callbackCaptor = ArgumentCaptor.forClass(WebServiceCallback.class);
         verify(mockWebServiceHelper).getListOfHighscores(callbackCaptor.capture());
         callbackCaptor.getValue().onError(new Error("test error"));
 
@@ -105,7 +106,6 @@ public class HighscoreActivityUnitTest {
         when(NetworkUtils.isConnectionAvailable(any(Context.class))).thenReturn(true);
         highscoreActivity = setupActivity(HighscoreActivity_.class);
 
-        ArgumentCaptor<WebServiceCallback> callbackCaptor = ArgumentCaptor.forClass(WebServiceCallback.class);
         verify(mockWebServiceHelper).getListOfHighscores(callbackCaptor.capture());
         List<Highscore> highscores = buildHighscoreList();
         callbackCaptor.getValue().onResultListReceived(highscores);
@@ -118,12 +118,11 @@ public class HighscoreActivityUnitTest {
     public void ownHighscoreHighlighted() {
         when(NetworkUtils.isConnectionAvailable(any(Context.class))).thenReturn(true);
         String highscoreId = "123af4";
-        Intent testIntent = new Intent(Robolectric.getShadowApplication().getApplicationContext(), HighscoreActivity_.class);
+        Intent testIntent = new Intent(ShadowApplication.getInstance().getApplicationContext(), HighscoreActivity_.class);
         testIntent.putExtra("highlight", highscoreId);
 
         highscoreActivity = buildActivity(HighscoreActivity_.class).withIntent(testIntent).create().get();
 
-        ArgumentCaptor<WebServiceCallback> callbackCaptor = ArgumentCaptor.forClass(WebServiceCallback.class);
         verify(mockWebServiceHelper).getListOfHighscores(callbackCaptor.capture());
         List<Highscore> highscores = buildHighscoreList();
         highscores.add(new Highscore("name", 1, new Date(), highscoreId));

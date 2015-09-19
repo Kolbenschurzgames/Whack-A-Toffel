@@ -11,9 +11,9 @@ import android.view.Window;
 import de.kolbenschurzgames.whack_a_toffel.app.R;
 import de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivity_;
 import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
+import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelTap;
 import de.kolbenschurzgames.whack_a_toffel.app.sound.GameSound;
 import de.kolbenschurzgames.whack_a_toffel.app.sound.SoundUtil;
-
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Touch;
@@ -26,7 +26,7 @@ import java.util.Date;
 class GameActivity extends FragmentActivity {
 
     private static final long DEFAULT_DURATION_IN_MILLISECONDS = 15 * 1000;
-    private static final short TICK_INTERVAL = 1 * 1000;
+    private static final short TICK_INTERVAL = 1000;
 
     CountDownTimer countDownTimer;
 
@@ -48,11 +48,11 @@ class GameActivity extends FragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        gameView = new GameView_(this);
+
+        gameView = GameView_.build(this);
         setContentView(gameView);
 
         gameSound.start(this);
-
     }
 
     @Override
