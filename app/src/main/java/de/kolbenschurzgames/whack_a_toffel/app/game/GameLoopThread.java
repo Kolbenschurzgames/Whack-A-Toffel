@@ -6,7 +6,8 @@ import android.util.Log;
 class GameLoopThread extends Thread {
     private static final long FPS = 10;
 
-    private GameView view;
+    private final GameView view;
+
     private boolean isRunning = false;
 
     GameLoopThread(GameView view) {

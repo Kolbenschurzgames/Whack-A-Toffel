@@ -3,7 +3,6 @@ package de.kolbenschurzgames.whack_a_toffel.app.game;
 import android.content.Context;
 import android.graphics.*;
 import android.util.Log;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import de.kolbenschurzgames.whack_a_toffel.app.R;
 import org.androidannotations.annotations.Bean;
@@ -35,7 +34,7 @@ public class GameView extends SurfaceView {
 
     private GameLoopThread gameLoopThread;
     private Rect screenSize;
-    private Bitmap toffelHood;
+    private final Bitmap toffelHood;
 
     private String secondsUntilFinished;
     private String score = "0";
@@ -109,11 +108,7 @@ public class GameView extends SurfaceView {
     }
 
     private void setupToffelHood(int width, int height) {
-        try {
-            toffelManager.initializeToffelHood(width, height);
-        } catch (IllegalStateException e) {
-            Log.e("ToffelHood", "Error while setting toffel hood sizes", e);
-        }
+        toffelManager.initializeToffelHood(width, height);
     }
 
     @Override
@@ -137,9 +132,5 @@ public class GameView extends SurfaceView {
 
     void updateScore(int score) {
         this.score = Integer.toString(score);
-    }
-
-    String getCurrentScore() {
-        return this.score;
     }
 }

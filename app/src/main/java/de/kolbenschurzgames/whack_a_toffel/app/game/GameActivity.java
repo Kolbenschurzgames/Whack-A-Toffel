@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.Window;
 import de.kolbenschurzgames.whack_a_toffel.app.R;
 import de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivity_;
-import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
 import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelTap;
 import de.kolbenschurzgames.whack_a_toffel.app.sound.GameSound;
 import de.kolbenschurzgames.whack_a_toffel.app.sound.SoundUtil;
@@ -103,7 +102,7 @@ class GameActivity extends FragmentActivity {
             ToffelTap upTap = toffelManager.getTapResult(motionEvent.getX(), motionEvent.getY());
             if (lastTap.isTapped() && upTap.equals(lastTap)) {
                 // Toffel was tapped
-                onToffelTapped(upTap.getField());
+                onToffelTapped(upTap);
             } else {
                 // Toffel was not tapped
                 onToffelMissed();
@@ -111,12 +110,13 @@ class GameActivity extends FragmentActivity {
         }
     }
 
-    private void onToffelTapped(ToffelField field) {
-        ++score;
-        toffelManager.toffelTapped(field);
+    private void onToffelTapped(ToffelTap tapResult) {
+        score += tapResult.getToffelType().getScore();
+
+        toffelManager.toffelTapped(tapResult.getField());
         gameView.updateScore(score);
 
-        soundManager.playToffelTappedSound(this);
+        soundManager.playToffelTappedSound(this, tapResult.getToffelType());
     }
 
     private void onToffelMissed() {

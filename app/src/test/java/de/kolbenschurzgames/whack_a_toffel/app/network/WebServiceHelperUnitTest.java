@@ -39,7 +39,7 @@ import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
  * Created by alfriedl on 30.12.14.
  */
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class)
+@Config(constants = BuildConfig.class, manifest = Config.NONE)
 @PowerMockIgnore({"org.mockito.*", "org.robolectric.*", "android.*"})
 @PrepareForTest({Highscore.class, RequestQueueSingleton.class})
 public class WebServiceHelperUnitTest {
