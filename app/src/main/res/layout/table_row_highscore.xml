@@ -4,22 +4,23 @@
 		  android:id="@+id/tableRowHighscore"
 		  android:layout_width="wrap_content"
 		  android:layout_height="wrap_content"
-		  android:padding="5dip">
+		  android:padding="5dip"
+		  android:background="#33FFFFFF">
 
 	<TextView
 		android:padding="5dip"
-		android:text="@string/position"/>
+        android:textColor="#FFFFFF"/>
 
 	<TextView
 		android:padding="5dip"
-		android:text="@string/player"/>
+        android:textColor="#FFFFFF"/>
 
 	<TextView
 		android:padding="5dip"
-		android:text="@string/score"/>
+        android:textColor="#FFFFFF"/>
 
 	<TextView
 		android:padding="5dip"
-		android:text="@string/date"/>
+        android:textColor="#FFFFFF"/>
 
 </TableRow>

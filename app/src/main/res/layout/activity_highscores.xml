@@ -2,7 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-	        android:id="@+id/highscores_scroll_view">
+	        android:id="@+id/highscores_scroll_view"
+			android:background="@drawable/main_gradient">
 
 	<LinearLayout
 		android:layout_width="match_parent"
@@ -29,6 +30,54 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:visibility="invisible">
+
+            <TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:id="@+id/tableRowHighscoreTitle"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:padding="5dip"
+                      android:background="#33FFFFFF">
+
+                <TextView
+                        android:layout_span="4"
+                        android:padding="5dip"
+                        android:text="@string/highscores"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"/>
+            </TableRow>
+
+			<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+					  android:id="@+id/tableRowHighscore"
+					  android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"
+					  android:padding="5dip"
+					  android:background="#33FFFFFF">
+
+				<TextView
+						android:padding="5dip"
+						android:text="@string/position"
+						android:textColor="#FFFFFF"
+                        android:textStyle="bold"/>
+
+				<TextView
+						android:padding="5dip"
+						android:text="@string/player"
+						android:textColor="#FFFFFF"
+                        android:textStyle="bold"/>
+
+				<TextView
+						android:padding="5dip"
+						android:text="@string/score"
+						android:textColor="#FFFFFF"
+                        android:textStyle="bold"/>
+
+				<TextView
+						android:padding="5dip"
+						android:text="@string/date"
+						android:textColor="#FFFFFF"
+                        android:textStyle="bold"/>
+
+			</TableRow>
 
 			<include layout="@layout/table_row_highscore"/>
 

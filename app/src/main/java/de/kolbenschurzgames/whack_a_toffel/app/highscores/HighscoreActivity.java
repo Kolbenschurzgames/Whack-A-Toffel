@@ -118,7 +118,7 @@ public class HighscoreActivity extends Activity implements WebServiceCallback<Hi
     private void populateHighscoresTable(List<Highscore> highscores) {
         for (int i = 0; i < highscores.size(); i++) {
             Highscore highscore = highscores.get(i);
-            int position = i + 1;
+            int position = i + 2;
             TableRow row = buildHighscoreTableRow(highscore, position);
             highscoresTable.addView(row, position);
         }
@@ -131,7 +131,11 @@ public class HighscoreActivity extends Activity implements WebServiceCallback<Hi
         ((TextView) row.getChildAt(2)).setText(Integer.toString(highscore.getScore()));
         ((TextView) row.getChildAt(3)).setText(buildLocalizedDateTimeString(highscore.getDate()));
         if (idToHighlight != null && idToHighlight.equals(highscore.getId())) {
-            row.setBackgroundColor(Color.YELLOW);
+            row.setBackgroundColor(Color.parseColor("#66FFFFFF"));
+            ((TextView) row.getChildAt(0)).setTextColor(Color.BLACK);
+            ((TextView) row.getChildAt(1)).setTextColor(Color.BLACK);
+            ((TextView) row.getChildAt(2)).setTextColor(Color.BLACK);
+            ((TextView) row.getChildAt(3)).setTextColor(Color.BLACK);
             highlightedRow = row;
         }
         return row;
