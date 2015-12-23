@@ -115,13 +115,15 @@ public class HighscoreActivityUnitTest {
     }
 
     @Test
-    public void ownHighscoreHighlighted() {
+    public void ownHighscoreHighlighted() throws InterruptedException {
         when(NetworkUtils.isConnectionAvailable(any(Context.class))).thenReturn(true);
         String highscoreId = "123af4";
         Intent testIntent = new Intent(ShadowApplication.getInstance().getApplicationContext(), HighscoreActivity_.class);
         testIntent.putExtra("highlight", highscoreId);
 
         highscoreActivity = buildActivity(HighscoreActivity_.class).withIntent(testIntent).create().get();
+        // must wait here for the background task that uses the WebServiceHelper to complete
+        Thread.sleep(100);
 
         verify(mockWebServiceHelper).getListOfHighscores(callbackCaptor.capture());
         List<Highscore> highscores = buildHighscoreList();
