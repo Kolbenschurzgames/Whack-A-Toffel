@@ -138,9 +138,13 @@ public class HighscoreActivityUnitTest {
     }
 
     private void assertHighscoresDisplayedCorrectly(List<Highscore> highscores) {
+        TableRow headlineRow = (TableRow) highscoresTable.getChildAt(0);
+        TextView headlineTextView = (TextView) headlineRow.getChildAt(0);
+        Assert.assertEquals(highscoreActivity.getString(R.string.highscores), headlineTextView.getText());
+
         sortHighscoresDescendingByScore(highscores);
 
-        for (int i = 0; i < highscores.size(); i++) {
+        for (int i = 1; i < highscores.size(); i++) {
             TableRow currentRow = (TableRow) highscoresTable.getChildAt(i);
             Assert.assertNotNull(currentRow);
 
@@ -149,13 +153,13 @@ public class HighscoreActivityUnitTest {
             TextView scoreColumn = (TextView) currentRow.getChildAt(2);
             TextView dateColumn = (TextView) currentRow.getChildAt(3);
 
-            if (i == 0) {
+            if (i == 1) {
                 Assert.assertEquals(highscoreActivity.getString(R.string.position), positionColumn.getText());
                 Assert.assertEquals(highscoreActivity.getString(R.string.player), nameColumn.getText());
                 Assert.assertEquals(highscoreActivity.getString(R.string.score), scoreColumn.getText());
                 Assert.assertEquals(highscoreActivity.getString(R.string.date), dateColumn.getText());
             } else {
-                Highscore score = highscores.get(i - 1);
+                Highscore score = highscores.get(i - 2);
                 Assert.assertEquals(Integer.toString(i), positionColumn.getText());
                 Assert.assertEquals(score.getName(), nameColumn.getText());
                 Assert.assertEquals(Integer.toString(score.getScore()), scoreColumn.getText());

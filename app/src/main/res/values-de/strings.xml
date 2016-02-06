@@ -11,7 +11,7 @@
 	<string name="player">Spieler</string>
 	<string name="score">Punkte</string>
 	<string name="date">Datum</string>
-	<string name="position">Position</string>
+	<string name="position">#</string>
 	<string name="no_connection">Keine Verbindung verfügbar</string>
 	
 	<string name="time">Zeit</string>
