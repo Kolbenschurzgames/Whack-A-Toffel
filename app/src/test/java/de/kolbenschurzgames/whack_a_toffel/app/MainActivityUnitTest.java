@@ -29,7 +29,7 @@ import static org.robolectric.Robolectric.buildActivity;
  * Created by alfriedl on 17.08.14.
  */
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class)
+@Config(constants = BuildConfig.class, manifest = Config.NONE)
 @PowerMockIgnore({"org.mockito.*", "org.robolectric.*", "android.*"})
 @PrepareForTest({TitleSound_.class})
 public class MainActivityUnitTest {

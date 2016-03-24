@@ -41,7 +41,7 @@ import static org.robolectric.Robolectric.setupActivity;
  * Created by alfriedl on 26.09.14.
  */
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class)
+@Config(constants = BuildConfig.class, manifest = Config.NONE)
 @PowerMockIgnore({"org.robolectric.*", "android.*", "org.mockito.*"})
 @PrepareForTest({NetworkUtils.class, WebServiceHelper_.class})
 public class HighscoreActivityUnitTest {

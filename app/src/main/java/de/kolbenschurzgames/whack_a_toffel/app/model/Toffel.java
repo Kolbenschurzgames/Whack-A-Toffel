@@ -1,51 +1,93 @@
 package de.kolbenschurzgames.whack_a_toffel.app.model;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Point;
 
-public class Toffel {
-    private Bitmap toffel;
-    private Bitmap hole;
-    private boolean isVisible = false;
-    private int xPosition;
-    private int yPosition;
-    private int counter = 0;
+import java.util.Random;
 
-    public Toffel(Bitmap toffel, Bitmap hole, Point position) {
-        this.toffel = toffel;
-        this.hole = hole;
+public class Toffel {
+
+    private static final double VISIBILITY_RANDOMNESS_THRESHOLD = 0.01;
+
+    private final Random random = new Random();
+
+    private final int xPosition;
+    private final int yPosition;
+
+    private ToffelType type;
+
+    private int drawTicksCounter = 0;
+
+    private boolean visible = false;
+
+    public Toffel(Point position) {
         this.xPosition = position.x;
         this.yPosition = position.y;
+        this.type = ToffelType.REGULAR;
     }
 
-    public void updateToffel(Canvas canvas) {
-        if (isVisible) {
-            canvas.drawBitmap(toffel, this.xPosition, this.yPosition, null);
-            counter++;
-            if (counter > 50) {
-                isVisible = false;
-                counter = 0;
-            }
-        } else {
-            canvas.drawBitmap(hole, this.xPosition, this.yPosition, null);
-            shouldBeShown();
-        }
+    public ToffelType getType() {
+        return type;
     }
 
-    private void shouldBeShown() {
-        double randomValue = Math.random();
-        isVisible = randomValue < 0.01;
+    public int getXPosition() {
+        return xPosition;
     }
 
-    public boolean isTapped(float x, float y) {
-        return isVisible &&
-                x >= this.xPosition && x < this.xPosition + toffel.getWidth() &&
-                y >= yPosition && y < yPosition + toffel.getHeight();
+    public int getYPosition() {
+        return yPosition;
     }
 
-    public void hideToffel() {
-        this.isVisible = false;
+    public boolean isVisible() {
+        return visible;
     }
 
+    public int getDrawTicksCounter() {
+        return drawTicksCounter;
+    }
+
+    public void randomizeState() {
+        visible = random.nextDouble() < VISIBILITY_RANDOMNESS_THRESHOLD;
+        type = ToffelType.randomToffelType();
+    }
+
+    public void hide() {
+        this.visible = false;
+    }
+
+    public void incrementDrawTicksCounter() {
+        this.drawTicksCounter++;
+    }
+
+    public void resetDrawTicksCounter() {
+        this.drawTicksCounter = 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Toffel toffel = (Toffel) o;
+
+        return xPosition == toffel.xPosition && yPosition == toffel.yPosition && type == toffel.type;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = xPosition;
+        result = 31 * result + yPosition;
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Toffel{" +
+                "xPosition=" + xPosition +
+                ", yPosition=" + yPosition +
+                ", type=" + type +
+                ", drawTicksCounter=" + drawTicksCounter +
+                ", visible=" + visible +
+                '}';
+    }
 }

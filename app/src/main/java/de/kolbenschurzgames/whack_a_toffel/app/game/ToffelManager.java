@@ -3,100 +3,107 @@ package de.kolbenschurzgames.whack_a_toffel.app.game;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
-import de.kolbenschurzgames.whack_a_toffel.app.R;
 import de.kolbenschurzgames.whack_a_toffel.app.model.Toffel;
 import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
 import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelTap;
-import org.androidannotations.annotations.AfterInject;
+import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelType;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.res.DrawableRes;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @EBean(scope = EBean.Scope.Singleton)
 public class ToffelManager {
-    private final static int NUMBER_OF_TOFFELS = 9;
 
-    @DrawableRes(R.drawable.hole_toffel)
-    Drawable toffelResource;
-    @DrawableRes(R.drawable.hole_empty)
-    Drawable emptyHoleResource;
+    private static final int NUMBER_OF_TOFFELS = 9;
+    private static final int DRAW_TICKS_VISIBILITY_THRESHOLD = 30;
 
-    private Bitmap toffel;
-    private Bitmap scaledToffel;
-    private Bitmap hole;
-    private Bitmap scaledHole;
+    @Bean
+    ToffelImageProvider imageProvider;
 
     private int offset;
-    private int padding_top;
-    private int edge_length;
+    private int paddingTop;
+    private int edgeLength;
 
-    private Map<ToffelField, Toffel> toffelSack = new HashMap<ToffelField, Toffel>(NUMBER_OF_TOFFELS);
+    private final Map<ToffelField, Toffel> toffelSack = new HashMap<ToffelField, Toffel>(NUMBER_OF_TOFFELS);
 
-    @AfterInject
-    void initBitmaps() {
-        this.toffel = ((BitmapDrawable) toffelResource).getBitmap();
-        this.hole = ((BitmapDrawable) emptyHoleResource).getBitmap();
-    }
-
-    void initializeToffelHood(int width, int height) throws IllegalStateException {
+    void initializeToffelHood(int width, int height) {
         this.offset = 0;
-        this.padding_top = (height - width) / 2;
-        this.edge_length = width / 3;
-        this.scaledHole = Bitmap.createScaledBitmap(hole, edge_length - offset, edge_length - offset, false);
-        this.scaledToffel = Bitmap.createScaledBitmap(toffel, edge_length - offset, edge_length - offset, false);
-
-        if (this.scaledHole != null && this.scaledToffel != null) {
-            plantToffels();
-        } else {
-            throw new IllegalStateException("Error while resizing graphics");
-        }
+        this.paddingTop = (height - width) / 2;
+        this.edgeLength = width / 3;
+        plantToffels();
+        imageProvider.createScaledBitmaps(offset, edgeLength);
     }
 
     void plantToffels() {
-        toffelSack.put(ToffelField.FIELD_TOP_LEFT, new Toffel(this.scaledToffel, this.scaledHole, new Point(offset, padding_top + offset)));
-        toffelSack.put(ToffelField.FIELD_TOP_MIDDLE, new Toffel(this.scaledToffel, this.scaledHole, new Point(edge_length + offset, padding_top + offset)));
-        toffelSack.put(ToffelField.FIELD_TOP_RIGHT, new Toffel(this.scaledToffel, this.scaledHole, new Point((2 * edge_length) + offset, padding_top + offset)));
-        toffelSack.put(ToffelField.FIELD_MIDDLE_LEFT, new Toffel(this.scaledToffel, this.scaledHole, new Point(offset, padding_top + edge_length + offset)));
-        toffelSack.put(ToffelField.FIELD_MIDDLE_MIDDLE, new Toffel(this.scaledToffel, this.scaledHole, new Point(edge_length + offset, padding_top + edge_length + offset)));
-        toffelSack.put(ToffelField.FIELD_MIDDLE_RIGHT, new Toffel(this.scaledToffel, this.scaledHole, new Point((2 * edge_length) + offset, padding_top + edge_length + offset)));
-        toffelSack.put(ToffelField.FIELD_BOTTOM_LEFT, new Toffel(this.scaledToffel, this.scaledHole, new Point(offset, padding_top + (2 * edge_length) + offset)));
-        toffelSack.put(ToffelField.FIELD_BOTTOM_MIDDLE, new Toffel(this.scaledToffel, this.scaledHole, new Point(edge_length + offset, padding_top + (2 * edge_length) + offset)));
-        toffelSack.put(ToffelField.FIELD_BOTTOM_RIGHT, new Toffel(this.scaledToffel, this.scaledHole, new Point((2 * edge_length) + offset, padding_top + (2 * edge_length) + offset)));
+        toffelSack.put(ToffelField.FIELD_TOP_LEFT, new Toffel(new Point(offset, paddingTop + offset)));
+        toffelSack.put(ToffelField.FIELD_TOP_MIDDLE, new Toffel(new Point(edgeLength + offset, paddingTop + offset)));
+        toffelSack.put(ToffelField.FIELD_TOP_RIGHT, new Toffel(new Point((2 * edgeLength) + offset, paddingTop + offset)));
+        toffelSack.put(ToffelField.FIELD_MIDDLE_LEFT, new Toffel(new Point(offset, paddingTop + edgeLength + offset)));
+        toffelSack.put(ToffelField.FIELD_MIDDLE_MIDDLE, new Toffel(new Point(edgeLength + offset, paddingTop + edgeLength + offset)));
+        toffelSack.put(ToffelField.FIELD_MIDDLE_RIGHT, new Toffel(new Point((2 * edgeLength) + offset, paddingTop + edgeLength + offset)));
+        toffelSack.put(ToffelField.FIELD_BOTTOM_LEFT, new Toffel(new Point(offset, paddingTop + (2 * edgeLength) + offset)));
+        toffelSack.put(ToffelField.FIELD_BOTTOM_MIDDLE, new Toffel(new Point(edgeLength + offset, paddingTop + (2 * edgeLength) + offset)));
+        toffelSack.put(ToffelField.FIELD_BOTTOM_RIGHT, new Toffel(new Point((2 * edgeLength) + offset, paddingTop + (2 * edgeLength) + offset)));
     }
 
     void updateToffels(Canvas canvas) {
         for (Toffel toffel : toffelSack.values()) {
-            toffel.updateToffel(canvas);
+            updateToffel(toffel, canvas);
         }
+    }
+
+    private void updateToffel(Toffel toffel, Canvas canvas) {
+        if (toffel.isVisible()) {
+            drawToffel(toffel, canvas);
+            toffel.incrementDrawTicksCounter();
+            if (toffel.getDrawTicksCounter() > DRAW_TICKS_VISIBILITY_THRESHOLD) {
+                toffel.hide();
+                toffel.resetDrawTicksCounter();
+            }
+        } else {
+            canvas.drawBitmap(imageProvider.getScaledHole(), toffel.getXPosition(), toffel.getYPosition(), null);
+            toffel.randomizeState();
+        }
+    }
+
+    private void drawToffel(Toffel toffel, Canvas canvas) {
+        Bitmap toffelImage = imageProvider.getImageForToffelType(toffel.getType());
+        canvas.drawBitmap(toffelImage, toffel.getXPosition(), toffel.getYPosition(), null);
     }
 
     public ToffelTap getTapResult(float x, float y) {
         boolean isTapped = false;
         ToffelField field = ToffelField.NONE;
+        ToffelType type = ToffelType.REGULAR;
 
         for (Map.Entry<ToffelField, Toffel> toffelEntry : toffelSack.entrySet()) {
             Toffel t = toffelEntry.getValue();
-            if (t.isTapped(x, y)) {
-                isTapped = true;
+            if (isToffelFieldTapped(t, x, y)) {
+                isTapped = t.isVisible();
                 field = toffelEntry.getKey();
+                type = t.getType();
                 break;
             }
         }
 
-        return new ToffelTap(field, isTapped);
+        return new ToffelTap(field, isTapped, type);
+    }
+
+    private boolean isToffelFieldTapped(Toffel toffel, float x, float y) {
+        Bitmap img = imageProvider.getImageForToffelType(toffel.getType());
+        return x >= toffel.getXPosition() && x < toffel.getXPosition() + img.getWidth() &&
+                y >= toffel.getYPosition() && y < toffel.getYPosition() + img.getHeight();
     }
 
     public void toffelTapped(ToffelField field) {
         Toffel toffel = toffelSack.get(field);
         if (toffel != null) {
-            toffel.hideToffel();
+            toffel.hide();
         } else {
-            Log.w("ToffelManager", "toffelTapped invoked for Field " + field.name() + " with no toffel");
+            Log.w("ToffelManager", "toffelTapped invoked for field " + field.name() + " with no toffel");
         }
     }
 }

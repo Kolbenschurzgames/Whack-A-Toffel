@@ -5,6 +5,7 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.util.Log;
 
+import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelType;
 import org.androidannotations.annotations.EBean;
 
 import java.io.IOException;
@@ -18,19 +19,13 @@ import java.util.Random;
 @EBean(scope = EBean.Scope.Singleton)
 public class SoundUtil {
 
-    private final static List<TapMissedSound> TAPMISSED_SOUNDS = Arrays.asList(TapMissedSound.values());
-    private final static int TAPMISSED_SOUNDS_SIZE = TAPMISSED_SOUNDS.size();
-
-    private final static Random RANDOM = new Random();
-
-    public void playToffelTappedSound(Context context) {
-        if (RANDOM.nextBoolean()) {
-            createMediaplayerAndStart(context, TapSound.SCHOAS.getIdentifier(), false);
-        }
+    public void playToffelTappedSound(Context context, ToffelType toffelType) {
+        TapSound sound = getTapSoundForToffelType(toffelType);
+        createMediaplayerAndStart(context, sound.getIdentifier(), false);
     }
 
     public void playToffelMissedSound(Context context) {
-        TapMissedSound sound = TAPMISSED_SOUNDS.get(RANDOM.nextInt(TAPMISSED_SOUNDS_SIZE));
+        TapMissedSound sound = TapMissedSound.getRandomSound();
         createMediaplayerAndStart(context, sound.getIdentifier(), false);
     }
 
@@ -55,5 +50,13 @@ public class SoundUtil {
         return mediaPlayer;
     }
 
-
+    private TapSound getTapSoundForToffelType(ToffelType type) {
+        switch(type) {
+            case REGULAR:
+            default:
+                return TapSound.SCHOAS;
+            case EVIL:
+                return TapSound.FINGA_WEG;
+        }
+    }
 }

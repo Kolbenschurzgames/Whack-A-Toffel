@@ -9,6 +9,7 @@ import de.kolbenschurzgames.whack_a_toffel.app.BuildConfig;
 import de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivity_;
 import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
 import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelTap;
+import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelType;
 import de.kolbenschurzgames.whack_a_toffel.app.sound.GameSound_;
 import de.kolbenschurzgames.whack_a_toffel.app.sound.SoundUtil_;
 import junit.framework.Assert;
@@ -37,7 +38,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
  * Created by alfriedl on 25.01.15.
  */
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class)
+@Config(constants = BuildConfig.class, manifest = Config.NONE)
 @PowerMockIgnore({"org.mockito.*", "org.robolectric.*", "android.*"})
 @PrepareForTest({ToffelManager_.class, SoundUtil_.class, GameSound_.class})
 public class GameActivityUnitTest {
@@ -118,8 +119,8 @@ public class GameActivityUnitTest {
         when(actionUpEvent.getX()).thenReturn(upEventX);
         when(actionUpEvent.getY()).thenReturn(upEventY);
 
-        when(mockToffelManager.getTapResult(downEventX, downEventY)).thenReturn(new ToffelTap(ToffelField.FIELD_BOTTOM_LEFT, true));
-        when(mockToffelManager.getTapResult(upEventX, upEventY)).thenReturn(new ToffelTap(ToffelField.FIELD_BOTTOM_RIGHT, true));
+        when(mockToffelManager.getTapResult(downEventX, downEventY)).thenReturn(new ToffelTap(ToffelField.FIELD_BOTTOM_LEFT, true, ToffelType.REGULAR));
+        when(mockToffelManager.getTapResult(upEventX, upEventY)).thenReturn(new ToffelTap(ToffelField.FIELD_BOTTOM_RIGHT, true, ToffelType.REGULAR));
 
         gameActivity.gameViewTouched(mockView, actionDownEvent);
         verify(mockToffelManager).getTapResult(downEventX, downEventY);
@@ -146,7 +147,7 @@ public class GameActivityUnitTest {
         when(actionUpEvent.getX()).thenReturn(x);
         when(actionUpEvent.getY()).thenReturn(y);
 
-        when(mockToffelManager.getTapResult(x, y)).thenReturn(new ToffelTap(tappedField, false));
+        when(mockToffelManager.getTapResult(x, y)).thenReturn(new ToffelTap(tappedField, false, ToffelType.REGULAR));
 
         gameActivity.gameViewTouched(mockView, actionDownEvent);
         gameActivity.gameViewTouched(mockView, actionUpEvent);
@@ -171,7 +172,7 @@ public class GameActivityUnitTest {
         when(actionUpEvent.getX()).thenReturn(x);
         when(actionUpEvent.getY()).thenReturn(y);
 
-        when(mockToffelManager.getTapResult(x, y)).thenReturn(new ToffelTap(tappedField, true));
+        when(mockToffelManager.getTapResult(x, y)).thenReturn(new ToffelTap(tappedField, true, ToffelType.REGULAR));
 
         gameActivity.gameViewTouched(mockView, actionDownEvent);
         gameActivity.gameViewTouched(mockView, actionUpEvent);
@@ -196,12 +197,12 @@ public class GameActivityUnitTest {
         when(actionUpEvent.getX()).thenReturn(x);
         when(actionUpEvent.getY()).thenReturn(y);
 
-        when(mockToffelManager.getTapResult(x, y)).thenReturn(new ToffelTap(tappedField, true));
+        when(mockToffelManager.getTapResult(x, y)).thenReturn(new ToffelTap(tappedField, true, ToffelType.REGULAR));
 
         gameActivity.gameViewTouched(mockView, actionDownEvent);
         gameActivity.gameViewTouched(mockView, actionUpEvent);
 
-        verify(mockSoundManager).playToffelTappedSound(any(Context.class));
+        verify(mockSoundManager).playToffelTappedSound(any(Context.class), eq(ToffelType.REGULAR));
     }
 
     @Test
@@ -220,7 +221,7 @@ public class GameActivityUnitTest {
         when(actionUpEvent.getX()).thenReturn(12345f);
         when(actionUpEvent.getY()).thenReturn(y);
 
-        when(mockToffelManager.getTapResult(x, y)).thenReturn(new ToffelTap(tappedField, false));
+        when(mockToffelManager.getTapResult(x, y)).thenReturn(new ToffelTap(tappedField, false, ToffelType.REGULAR));
 
         gameActivity.gameViewTouched(mockView, actionDownEvent);
         gameActivity.gameViewTouched(mockView, actionUpEvent);
