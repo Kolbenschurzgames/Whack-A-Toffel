@@ -21,7 +21,7 @@ public class ToffelImageProvider {
     @DrawableRes(R.drawable.hole_empty)
     Drawable emptyHoleResource;
 
-    @DrawableRes(R.drawable.eviltoffel)
+    @DrawableRes(R.drawable.hole_eviltoffel)
     Drawable evilToffelResource;
 
     private Bitmap toffel;
