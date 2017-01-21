@@ -1,9 +1,11 @@
 buildscript {
     repositories {
-        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
-        classpath 'com.moowork.gradle:gradle-node-plugin:0.11'
+        classpath 'com.moowork.gradle:gradle-node-plugin:1.1.1'
     }
 }
 
@@ -11,7 +13,7 @@ apply plugin: 'com.moowork.node'
 
 node {
     // Version of node to use.
-    version = '5.2.0'
+    version = '6.9.4'
 
     // Base URL for fetching node distributions (change if you have a mirror).
     distBaseUrl = 'http://nodejs.org/dist'
@@ -26,13 +28,13 @@ node {
 
 task test(type: NodeTask) {
     script = file('node_modules/mocha/bin/mocha')
-    args = ['--harmony', 'src/test']
+    args = ['src/test']
     environment = ['NODE_ENV': 'test', 'DEBUG': 'toffel*']
 }
 
 task integration(type: NodeTask) {
     script = file('node_modules/mocha/bin/mocha')
-    args = ['--harmony', 'src/test/integration']
+    args = ['src/test/integration']
     environment = ['NODE_ENV': 'test', 'DEBUG': 'toffel*']
 }
 
