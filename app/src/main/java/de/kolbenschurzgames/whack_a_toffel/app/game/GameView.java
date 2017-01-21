@@ -1,13 +1,20 @@
 package de.kolbenschurzgames.whack_a_toffel.app.game;
 
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.Log;
 import android.view.SurfaceView;
-import de.kolbenschurzgames.whack_a_toffel.app.R;
+
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EView;
 import org.androidannotations.annotations.res.StringRes;
+
+import de.kolbenschurzgames.whack_a_toffel.app.R;
 
 @EView
 public class GameView extends SurfaceView {

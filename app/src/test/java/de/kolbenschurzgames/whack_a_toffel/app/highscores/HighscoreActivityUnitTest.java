@@ -8,13 +8,16 @@ import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
 import de.kolbenschurzgames.whack_a_toffel.app.BuildConfig;
 import de.kolbenschurzgames.whack_a_toffel.app.R;
 import de.kolbenschurzgames.whack_a_toffel.app.model.Highscore;
 import de.kolbenschurzgames.whack_a_toffel.app.network.NetworkUtils;
 import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceCallback;
 import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceHelper_;
+
 import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,7 +29,7 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowApplication;
 
@@ -40,8 +43,8 @@ import static org.robolectric.Robolectric.setupActivity;
 /**
  * Created by alfriedl on 26.09.14.
  */
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, manifest = Config.NONE)
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, manifest = "src/main/AndroidManifest.xml")
 @PowerMockIgnore({"org.robolectric.*", "android.*", "org.mockito.*"})
 @PrepareForTest({NetworkUtils.class, WebServiceHelper_.class})
 public class HighscoreActivityUnitTest {
@@ -59,7 +62,7 @@ public class HighscoreActivityUnitTest {
     private WebServiceHelper_ mockWebServiceHelper;
 
     @Captor
-    private ArgumentCaptor<WebServiceCallback> callbackCaptor;
+    private ArgumentCaptor<WebServiceCallback<Highscore>> callbackCaptor;
 
     @Before
     public void setUp() {
@@ -209,7 +212,7 @@ public class HighscoreActivityUnitTest {
     }
 
     private List<Highscore> buildHighscoreList() {
-        List<Highscore> highscores = new ArrayList<Highscore>();
+        List<Highscore> highscores = new ArrayList<>();
         Highscore score1 = new Highscore("score1", 1000, new Date());
         Highscore score2 = new Highscore("score2", 3000, new Date());
         Highscore score3 = new Highscore("score3", 2000, new Date());

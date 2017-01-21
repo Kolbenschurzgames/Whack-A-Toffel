@@ -4,6 +4,7 @@ import android.content.Context;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import de.kolbenschurzgames.whack_a_toffel.app.BuildConfig;
 import de.kolbenschurzgames.whack_a_toffel.app.model.Highscore;
@@ -21,7 +22,7 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.lang.reflect.Method;
@@ -38,7 +39,7 @@ import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
 /**
  * Created by alfriedl on 30.12.14.
  */
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, manifest = Config.NONE)
 @PowerMockIgnore({"org.mockito.*", "org.robolectric.*", "android.*"})
 @PrepareForTest({Highscore.class, RequestQueueSingleton.class})
@@ -54,7 +55,10 @@ public class WebServiceHelperUnitTest {
     private RequestQueueSingleton mockRequestQueueSingleton;
 
     @Captor
-    private ArgumentCaptor<JsonArrayRequest> jsonRequestArgCaptor;
+    private ArgumentCaptor<JsonArrayRequest> jsonArrayRequestArgCaptor;
+
+    @Captor
+    private ArgumentCaptor<JsonObjectRequest> jsonObjectRequestArgCaptor;
 
     private WebServiceHelper_ webServiceHelper;
 
@@ -111,9 +115,9 @@ public class WebServiceHelperUnitTest {
             }
         });
 
-        verify(mockRequestQueueSingleton).addToRequestQueue(jsonRequestArgCaptor.capture());
+        verify(mockRequestQueueSingleton).addToRequestQueue(jsonArrayRequestArgCaptor.capture());
 
-        JsonArrayRequest request = jsonRequestArgCaptor.getValue();
+        JsonArrayRequest request = jsonArrayRequestArgCaptor.getValue();
         // Workaround because JsonRequest.deliverResponse is not public (unlike deliverError)
         Method deliverResponse = JsonRequest.class.getDeclaredMethod("deliverResponse", Object.class);
         deliverResponse.setAccessible(true);
@@ -123,7 +127,7 @@ public class WebServiceHelperUnitTest {
     @Test
     public void testDeliverResponse() throws Exception {
         JSONArray responseArray = new JSONArray();
-        final List<Highscore> highscores = new ArrayList<Highscore>();
+        final List<Highscore> highscores = new ArrayList<>();
         highscores.add(new Highscore("name", 100, new Date()));
         highscores.add(new Highscore("name2", 200, new Date()));
 
@@ -141,9 +145,9 @@ public class WebServiceHelperUnitTest {
             }
         });
 
-        verify(mockRequestQueueSingleton).addToRequestQueue(jsonRequestArgCaptor.capture());
+        verify(mockRequestQueueSingleton).addToRequestQueue(jsonArrayRequestArgCaptor.capture());
 
-        JsonArrayRequest request = jsonRequestArgCaptor.getValue();
+        JsonArrayRequest request = jsonArrayRequestArgCaptor.getValue();
         // Workaround because JsonRequest.deliverResponse is not public (unlike deliverError)
         Method deliverResponse = JsonRequest.class.getDeclaredMethod("deliverResponse", Object.class);
         deliverResponse.setAccessible(true);
@@ -167,9 +171,9 @@ public class WebServiceHelperUnitTest {
 
         verify(highscoreMock, times(1)).toJSON();
 
-        verify(mockRequestQueueSingleton).addToRequestQueue(jsonRequestArgCaptor.capture());
+        verify(mockRequestQueueSingleton).addToRequestQueue(jsonObjectRequestArgCaptor.capture());
 
-        JsonArrayRequest request = jsonRequestArgCaptor.getValue();
+        JsonObjectRequest request = jsonObjectRequestArgCaptor.getValue();
         Assert.assertEquals(Request.Method.POST, request.getMethod());
 
         request.deliverError(new VolleyError("error"));
@@ -199,7 +203,7 @@ public class WebServiceHelperUnitTest {
     @Test
     public void testSubmitSuccessful() throws Exception {
         JSONArray responseArray = new JSONArray();
-        final List<Highscore> highscores = new ArrayList<Highscore>();
+        final List<Highscore> highscores = new ArrayList<>();
         highscores.add(new Highscore("test", 1, new Date()));
         highscores.add(new Highscore("test2", 2, new Date()));
 
@@ -219,9 +223,9 @@ public class WebServiceHelperUnitTest {
 
         verify(highscoreMock, times(1)).toJSON();
 
-        verify(mockRequestQueueSingleton).addToRequestQueue(jsonRequestArgCaptor.capture());
+        verify(mockRequestQueueSingleton).addToRequestQueue(jsonObjectRequestArgCaptor.capture());
 
-        JsonArrayRequest request = jsonRequestArgCaptor.getValue();
+        JsonObjectRequest request = jsonObjectRequestArgCaptor.getValue();
         Assert.assertEquals(Request.Method.POST, request.getMethod());
 
         // Workaround because JsonRequest.deliverResponse is not public (unlike deliverError)

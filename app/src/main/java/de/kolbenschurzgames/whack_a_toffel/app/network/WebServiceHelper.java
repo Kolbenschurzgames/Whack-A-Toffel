@@ -1,13 +1,18 @@
 package de.kolbenschurzgames.whack_a_toffel.app.network;
 
 import android.content.Context;
+
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonArrayRequest;
-import de.kolbenschurzgames.whack_a_toffel.app.model.Highscore;
+import com.android.volley.toolbox.JsonObjectRequest;
+
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import de.kolbenschurzgames.whack_a_toffel.app.model.Highscore;
 
 /**
  * Created by alfriedl on 08.11.14.
@@ -23,7 +28,7 @@ public class WebServiceHelper {
 
     public void getListOfHighscores(final WebServiceCallback<Highscore> callback) throws WebServiceError {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(HIGHSCORES_URL,
-                new HighscoreResponseListener(callback),
+                new HighscoreResponseListener<JSONArray>(callback),
                 new DefaultErrorListener(callback));
 
         RequestQueueSingleton.getInstance(context).addToRequestQueue(jsonArrayRequest);
@@ -33,9 +38,9 @@ public class WebServiceHelper {
         try {
             final JSONObject jsonHighscore = score.toJSON();
 
-            JsonArrayRequest highscorePostRequest = new JsonArrayRequest(Request.Method.POST, HIGHSCORES_URL,
+            JsonObjectRequest highscorePostRequest = new JsonObjectRequest(Request.Method.POST, HIGHSCORES_URL,
                     jsonHighscore,
-                    new HighscoreResponseListener(callback),
+                    new HighscoreResponseListener<JSONObject>(callback),
                     new DefaultErrorListener(callback));
 
             RequestQueueSingleton.getInstance(context).addToRequestQueue(highscorePostRequest);

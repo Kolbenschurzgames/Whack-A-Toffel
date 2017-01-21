@@ -4,15 +4,17 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.util.Log;
-import de.kolbenschurzgames.whack_a_toffel.app.model.Toffel;
-import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
-import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelTap;
-import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelType;
+
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import de.kolbenschurzgames.whack_a_toffel.app.model.Toffel;
+import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelField;
+import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelTap;
+import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelType;
 
 @EBean(scope = EBean.Scope.Singleton)
 public class ToffelManager {
@@ -27,7 +29,7 @@ public class ToffelManager {
     private int paddingTop;
     private int edgeLength;
 
-    private final Map<ToffelField, Toffel> toffelSack = new HashMap<ToffelField, Toffel>(NUMBER_OF_TOFFELS);
+    private final Map<ToffelField, Toffel> toffelSack = new HashMap<>(NUMBER_OF_TOFFELS);
 
     void initializeToffelHood(int width, int height) {
         this.offset = 0;
@@ -37,7 +39,7 @@ public class ToffelManager {
         imageProvider.createScaledBitmaps(offset, edgeLength);
     }
 
-    void plantToffels() {
+    private void plantToffels() {
         toffelSack.put(ToffelField.FIELD_TOP_LEFT, new Toffel(new Point(offset, paddingTop + offset)));
         toffelSack.put(ToffelField.FIELD_TOP_MIDDLE, new Toffel(new Point(edgeLength + offset, paddingTop + offset)));
         toffelSack.put(ToffelField.FIELD_TOP_RIGHT, new Toffel(new Point((2 * edgeLength) + offset, paddingTop + offset)));

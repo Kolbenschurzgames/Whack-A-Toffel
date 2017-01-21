@@ -5,7 +5,7 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.android.tools.build:gradle:2.2.3'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
@@ -13,7 +13,7 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
-def AAVersion = '3.3.2'
+def AAVersion = '4.2.0'
 
 dependencies {
     apt "org.androidannotations:androidannotations:$AAVersion"
@@ -35,13 +35,18 @@ android {
         exclude 'META-INF/NOTICE'
     }
 
-    compileSdkVersion 19
-    buildToolsVersion "19.1"
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         applicationId "de.kolbenschurzgames.whack_a_toffel.app"
-        minSdkVersion 14
-        targetSdkVersion 19
+        minSdkVersion 19
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
@@ -52,26 +57,31 @@ android {
     }
 }
 
-def PowerMockVersion = '1.6.2'
+def PowerMockVersion = '1.6.4'
+def SupportVersion = '22.2.1'
+def VolleyVersion = '1.0.0'
+def MockitoVersion = '1.10.19'
+def RobolectricVersion = '3.0'
+def JUnitVersion = '4.12'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     // You must install or update the Support Repository through the SDK manager in order to use this dependency.
-    compile 'com.android.support:support-v4:22.2.0'
+    compile "com.android.support:support-v4:$SupportVersion"
 
-    compile 'com.mcxiaoke.volley:library:1.0.19'
+    compile "com.android.volley:volley:$VolleyVersion"
 
-    testCompile "org.mockito:mockito-core:1.10.19"
+    testCompile "org.mockito:mockito-core:$MockitoVersion"
 
     testCompile "org.powermock:powermock-module-junit4:$PowerMockVersion"
     testCompile "org.powermock:powermock-module-junit4-rule:$PowerMockVersion"
-    testCompile("org.powermock:powermock-api-mockito:$PowerMockVersion")
-    testCompile("org.powermock:powermock-classloading-xstream:$PowerMockVersion")
+    testCompile "org.powermock:powermock-api-mockito:$PowerMockVersion"
+    testCompile "org.powermock:powermock-classloading-xstream:$PowerMockVersion"
 
-    testCompile('junit:junit:4.12')
+    testCompile "junit:junit:$JUnitVersion"
 
-    testCompile('org.robolectric:robolectric:3.0')
+    testCompile "org.robolectric:robolectric:$RobolectricVersion"
 }
 
 android.testOptions.unitTests.all {

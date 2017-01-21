@@ -9,10 +9,10 @@ import android.net.NetworkInfo;
  */
 public abstract class NetworkUtils {
 
-	public static boolean isConnectionAvailable(Context context) {
-		ConnectivityManager connMgr = (ConnectivityManager)
-				context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-		return networkInfo != null && networkInfo.isConnected();
-	}
+    public static boolean isConnectionAvailable(Context context) {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
+    }
 }

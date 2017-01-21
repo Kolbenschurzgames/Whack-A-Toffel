@@ -18,13 +18,13 @@ public abstract class LoopingSound {
     private MediaPlayer currentPlayer;
     private int id;
 
-    public LoopingSound(int id) {
+    LoopingSound(int id) {
         this.id = id;
     }
 
     public void start(Context context) {
         if (currentPlayer == null) {
-            currentPlayer = soundUtil.createMediaplayerAndStart(context, this.id, true);
+            currentPlayer = soundUtil.createMediaPlayerAndStart(context, this.id, true);
         }
     }
 
