@@ -5,13 +5,11 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.util.Log;
 
-import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelType;
 import org.androidannotations.annotations.EBean;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+
+import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelType;
 
 /**
  * Created by twankerl on 23.05.15.
@@ -21,15 +19,15 @@ public class SoundUtil {
 
     public void playToffelTappedSound(Context context, ToffelType toffelType) {
         TapSound sound = getTapSoundForToffelType(toffelType);
-        createMediaplayerAndStart(context, sound.getIdentifier(), false);
+        createMediaPlayerAndStart(context, sound.getIdentifier(), false);
     }
 
     public void playToffelMissedSound(Context context) {
         TapMissedSound sound = TapMissedSound.getRandomSound();
-        createMediaplayerAndStart(context, sound.getIdentifier(), false);
+        createMediaPlayerAndStart(context, sound.getIdentifier(), false);
     }
 
-    public MediaPlayer createMediaplayerAndStart(Context context, int resourceId, final boolean looping) {
+    MediaPlayer createMediaPlayerAndStart(Context context, int resourceId, final boolean looping) {
         AssetFileDescriptor assetFd = context.getResources().openRawResourceFd(resourceId);
 
         MediaPlayer mediaPlayer = new MediaPlayer();
@@ -51,7 +49,7 @@ public class SoundUtil {
     }
 
     private TapSound getTapSoundForToffelType(ToffelType type) {
-        switch(type) {
+        switch (type) {
             case REGULAR:
             default:
                 return TapSound.SCHOAS;

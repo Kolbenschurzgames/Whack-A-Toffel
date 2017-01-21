@@ -3,10 +3,13 @@ package de.kolbenschurzgames.whack_a_toffel.app;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Button;
+
 import de.kolbenschurzgames.whack_a_toffel.app.game.GameActivity_;
 import de.kolbenschurzgames.whack_a_toffel.app.highscores.HighscoreActivity_;
 import de.kolbenschurzgames.whack_a_toffel.app.sound.TitleSound_;
+
 import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,7 +19,7 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.util.ActivityController;
@@ -28,8 +31,8 @@ import static org.robolectric.Robolectric.buildActivity;
 /**
  * Created by alfriedl on 17.08.14.
  */
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, manifest = Config.NONE)
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, manifest = "src/main/AndroidManifest.xml")
 @PowerMockIgnore({"org.mockito.*", "org.robolectric.*", "android.*"})
 @PrepareForTest({TitleSound_.class})
 public class MainActivityUnitTest {

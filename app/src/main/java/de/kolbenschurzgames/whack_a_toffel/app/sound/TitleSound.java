@@ -10,7 +10,7 @@ import de.kolbenschurzgames.whack_a_toffel.app.R;
 @EBean(scope = EBean.Scope.Singleton)
 public class TitleSound extends LoopingSound {
 
-    public TitleSound() {
+    TitleSound() {
         super(R.raw.titelmusik);
     }
 }

@@ -6,15 +6,24 @@ import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
-import de.kolbenschurzgames.whack_a_toffel.app.R;
-import de.kolbenschurzgames.whack_a_toffel.app.model.Highscore;
-import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceCallback;
-import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceHelper;
-import org.androidannotations.annotations.*;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.UiThread;
+import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
 
 import java.util.Date;
 import java.util.List;
+
+import de.kolbenschurzgames.whack_a_toffel.app.R;
+import de.kolbenschurzgames.whack_a_toffel.app.model.Highscore;
+import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceCallback;
+import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceHelper;
 
 /**
  * Created by alfriedl on 16.02.15.

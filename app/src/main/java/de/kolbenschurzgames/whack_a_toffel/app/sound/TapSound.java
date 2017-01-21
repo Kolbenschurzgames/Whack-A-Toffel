@@ -1,7 +1,6 @@
 package de.kolbenschurzgames.whack_a_toffel.app.sound;
 
 import de.kolbenschurzgames.whack_a_toffel.app.R;
-import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelType;
 
 /**
  * Created by twankerl on 23.05.15.

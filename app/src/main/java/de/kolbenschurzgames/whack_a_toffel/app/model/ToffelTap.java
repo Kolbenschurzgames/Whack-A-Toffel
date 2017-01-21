@@ -1,5 +1,7 @@
 package de.kolbenschurzgames.whack_a_toffel.app.model;
 
+import java.util.Objects;
+
 /**
  * Created by alfriedl on 13.02.15.
  */
@@ -31,17 +33,14 @@ public final class ToffelTap {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         ToffelTap toffelTap = (ToffelTap) o;
-
-        return tapped == toffelTap.tapped && field == toffelTap.field;
+        return tapped == toffelTap.tapped &&
+                field == toffelTap.field;
     }
 
     @Override
     public int hashCode() {
-        int result = field != null ? field.hashCode() : 0;
-        result = 31 * result + (tapped ? 1 : 0);
-        return result;
+        return Objects.hash(field, tapped);
     }
 
     @Override

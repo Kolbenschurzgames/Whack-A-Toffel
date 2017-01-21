@@ -2,6 +2,7 @@ package de.kolbenschurzgames.whack_a_toffel.app.model;
 
 import android.graphics.Point;
 
+import java.util.Objects;
 import java.util.Random;
 
 public class Toffel {
@@ -66,18 +67,15 @@ public class Toffel {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Toffel toffel = (Toffel) o;
-
-        return xPosition == toffel.xPosition && yPosition == toffel.yPosition && type == toffel.type;
+        return xPosition == toffel.xPosition &&
+                yPosition == toffel.yPosition &&
+                type == toffel.type;
     }
 
     @Override
     public int hashCode() {
-        int result = xPosition;
-        result = 31 * result + yPosition;
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        return result;
+        return Objects.hash(xPosition, yPosition, type);
     }
 
     @Override

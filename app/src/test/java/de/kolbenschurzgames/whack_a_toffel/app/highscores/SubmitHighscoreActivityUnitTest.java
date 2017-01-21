@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Button;
 import android.widget.EditText;
+
 import de.kolbenschurzgames.whack_a_toffel.app.BuildConfig;
 import de.kolbenschurzgames.whack_a_toffel.app.R;
 import de.kolbenschurzgames.whack_a_toffel.app.model.Highscore;
 import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceCallback;
 import de.kolbenschurzgames.whack_a_toffel.app.network.WebServiceHelper_;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -21,7 +23,7 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
@@ -40,8 +42,8 @@ import static org.robolectric.Robolectric.buildActivity;
 /**
  * Created by alfriedl on 20.02.15.
  */
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, manifest = Config.NONE)
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, manifest = "src/main/AndroidManifest.xml")
 @PowerMockIgnore({"org.robolectric.*", "android.*", "org.mockito.*"})
 @PrepareForTest(WebServiceHelper_.class)
 public class SubmitHighscoreActivityUnitTest {
@@ -57,7 +59,7 @@ public class SubmitHighscoreActivityUnitTest {
     private WebServiceHelper_ mockWebServiceHelper;
 
     @Captor
-    private ArgumentCaptor<WebServiceCallback> callbackCaptor;
+    private ArgumentCaptor<WebServiceCallback<Highscore>> callbackCaptor;
 
     @Captor
     private ArgumentCaptor<Highscore> highscoreCaptor;
@@ -103,7 +105,7 @@ public class SubmitHighscoreActivityUnitTest {
 
     @Test
     public void submitButtonLaunchesHighscoreActivivityWithHighscoreHighlighted() throws InterruptedException {
-        List<Highscore> submitResult = new ArrayList<Highscore>();
+        List<Highscore> submitResult = new ArrayList<>();
         Highscore responseHighscore = new Highscore(nickname, testScore, testDate, "1");
         submitResult.add(responseHighscore);
 
@@ -114,7 +116,7 @@ public class SubmitHighscoreActivityUnitTest {
 
     @Test
     public void invalidServerResponseLaunchesHighscoreActivityWithoutHighlight() throws InterruptedException {
-        List<Highscore> submitResult = new ArrayList<Highscore>();
+        List<Highscore> submitResult = new ArrayList<>();
         Highscore responseHighscore = new Highscore(nickname, testScore, testDate, "1");
         Highscore unexpectedHighscoreInResponse = new Highscore(nickname, 123, testDate, "2");
         submitResult.add(responseHighscore);

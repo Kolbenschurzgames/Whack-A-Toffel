@@ -1,10 +1,10 @@
 package de.kolbenschurzgames.whack_a_toffel.app.sound;
 
-import de.kolbenschurzgames.whack_a_toffel.app.R;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+
+import de.kolbenschurzgames.whack_a_toffel.app.R;
 
 /**
  * Created by twankerl on 23.05.15.

@@ -1,5 +1,7 @@
 package de.kolbenschurzgames.whack_a_toffel.app.model;
 
+import android.support.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -7,6 +9,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by alfriedl on 20.09.14.
@@ -30,7 +33,7 @@ public class Highscore implements Comparable<Highscore> {
     }
 
     public static List<Highscore> parseJsonArrayToList(JSONArray array) throws JSONException {
-        List<Highscore> list = new ArrayList<Highscore>();
+        List<Highscore> list = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
             JSONObject obj = array.getJSONObject(i);
             Highscore highscore = parseJsonObjectToHighscore(obj);
@@ -39,7 +42,7 @@ public class Highscore implements Comparable<Highscore> {
         return list;
     }
 
-    private static Highscore parseJsonObjectToHighscore(JSONObject obj) throws JSONException {
+    public static Highscore parseJsonObjectToHighscore(JSONObject obj) throws JSONException {
         String name = obj.getString("name");
         int score = obj.getInt("score");
         Date date = new Date(obj.getLong("timestamp"));
@@ -75,23 +78,16 @@ public class Highscore implements Comparable<Highscore> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Highscore highscore = (Highscore) o;
-
-        if (score != highscore.score) return false;
-        if (name != null ? !name.equals(highscore.name) : highscore.name != null) return false;
-        if (date != null ? !date.equals(highscore.date) : highscore.date != null) return false;
-        return !(id != null ? !id.equals(highscore.id) : highscore.id != null);
-
+        return score == highscore.score &&
+                Objects.equals(name, highscore.name) &&
+                Objects.equals(date, highscore.date) &&
+                Objects.equals(id, highscore.id);
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + score;
-        result = 31 * result + (date != null ? date.hashCode() : 0);
-        result = 31 * result + (id != null ? id.hashCode() : 0);
-        return result;
+        return Objects.hash(name, score, date, id);
     }
 
     @Override
@@ -105,7 +101,7 @@ public class Highscore implements Comparable<Highscore> {
     }
 
     @Override
-    public int compareTo(Highscore another) {
+    public int compareTo(@NonNull Highscore another) {
         return this.getScore() - another.getScore();
     }
 }

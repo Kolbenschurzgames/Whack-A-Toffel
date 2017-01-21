@@ -3,11 +3,13 @@ package de.kolbenschurzgames.whack_a_toffel.app.game;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import de.kolbenschurzgames.whack_a_toffel.app.R;
-import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelType;
+
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.res.DrawableRes;
+
+import de.kolbenschurzgames.whack_a_toffel.app.R;
+import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelType;
 
 /**
  * Created by alfriedl on 19.09.15.

@@ -8,17 +8,19 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import de.kolbenschurzgames.whack_a_toffel.app.R;
-import de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivity_;
-import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelTap;
-import de.kolbenschurzgames.whack_a_toffel.app.sound.GameSound;
-import de.kolbenschurzgames.whack_a_toffel.app.sound.SoundUtil;
+
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Touch;
 import org.androidannotations.annotations.WindowFeature;
 
 import java.util.Date;
+
+import de.kolbenschurzgames.whack_a_toffel.app.R;
+import de.kolbenschurzgames.whack_a_toffel.app.highscores.SubmitHighscoreActivity_;
+import de.kolbenschurzgames.whack_a_toffel.app.model.ToffelTap;
+import de.kolbenschurzgames.whack_a_toffel.app.sound.GameSound;
+import de.kolbenschurzgames.whack_a_toffel.app.sound.SoundUtil;
 
 @WindowFeature(Window.FEATURE_NO_TITLE)
 @EActivity
