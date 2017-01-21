@@ -42,7 +42,9 @@ module.exports = (function() {
 				deferred.reject(new Error(err));
 			} else {
 				debug('Successfully inserted new highscore into collection', highscore);
-				deferred.resolve(result.ops[0]);
+				var res = result.ops[0]
+				debug('returning', res)
+				deferred.resolve(res);
 			}
 		});
 
