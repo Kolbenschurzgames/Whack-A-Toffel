@@ -9,15 +9,15 @@ var db;
 
 describe('database spec', function() {
     var dbStub,
-        insertStub = sinon.stub(),
-        findToArrayStub = sinon.stub(),
-        mockCollection = {
-            insert: insertStub,
-            find: function() {
-                return { toArray: findToArrayStub };
-            }
-        },
-        collectionStub = sinon.stub().returns(mockCollection);
+    insertStub = sinon.stub(),
+    findToArrayStub = sinon.stub(),
+    mockCollection = {
+        insert: insertStub,
+        find: function() {
+            return { toArray: findToArrayStub };
+        }
+    },
+    collectionStub = sinon.stub().returns(mockCollection);
 
     before(function() {
         dbStub = sinon.stub(mongoskin, 'db');
@@ -74,15 +74,33 @@ describe('database spec', function() {
 
         describe('successful insert of a highscore', function() {
             var result;
+            var dbHighscore = {
+                "name": "test",
+                "score": 100,
+                "timestamp": 1433401883849,
+                "_id": "58837ecc6855b5318a0bbfbc"
+            }
 
             before(function() {
-                result = 'success';
+                result = {
+                    "result": {
+                        "ok": 1,
+                        "n": 1
+                    },
+                    "ops": [
+                        dbHighscore
+                    ],
+                    "insertedCount": 1,
+                    "insertedIds": [
+                        "58837ecc6855b5318a0bbfbc"
+                    ]
+                };
                 insertStub.yields(null, result);
             });
 
             it('should return a promise containing the result of the database operation', function(done) {
                 db.saveHighscore(highscore).then(function(val) {
-                    expect(val).to.equal(result);
+                    expect(val).to.eql(dbHighscore);
                     done();
                 });
             });
