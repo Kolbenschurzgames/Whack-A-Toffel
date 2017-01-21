@@ -1,55 +1,55 @@
-module.exports = (function() {
-	'use strict';
+module.exports = (function () {
+  'use strict'
 
-	var db;
-	var HIGHSCORES = 'highscores';
+  var db
+  var HIGHSCORES = 'highscores'
 
-	var debug = require('debug')('toffel:database');
-	var Q = require('q');
-	
-	var Database = function(dbName) {
-		var mongoDbUri;
-		
-		if (typeof dbName === 'string') {
-			mongoDbUri = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/' + dbName;
-			db = require('mongoskin').db(mongoDbUri, {native_parser: true});
-		} else {
-			throw new Error('Database name parameter missing');
-		}
-	};
+  var debug = require('debug')('toffel:database')
+  var Q = require('q')
 
-	Database.prototype.getHighscores = function() {
-		var deferred = Q.defer();
+  var Database = function (dbName) {
+    var mongoDbUri
 
-		db.collection(HIGHSCORES).find().toArray(function(err, result) {
-			if (err) {
-				debug('Failed to retrieve highscores: ' + err);
-				deferred.reject(new Error(err));
-			} else {
-				deferred.resolve(result);
-			}
-		});
+    if (typeof dbName === 'string') {
+      mongoDbUri = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/' + dbName
+      db = require('mongoskin').db(mongoDbUri, { native_parser: true })
+    } else {
+      throw new Error('Database name parameter missing')
+    }
+  }
 
-		return deferred.promise;
-	};
+  Database.prototype.getHighscores = function () {
+    var deferred = Q.defer()
 
-	Database.prototype.saveHighscore = function(highscore) {
-		var deferred = Q.defer();
+    db.collection(HIGHSCORES).find().toArray(function (err, result) {
+      if (err) {
+        debug('Failed to retrieve highscores: ' + err)
+        deferred.reject(new Error(err))
+      } else {
+        deferred.resolve(result)
+      }
+    })
 
-		db.collection(HIGHSCORES).insert(highscore, function(err, result) {
-		    if (err) {
-				debug('Failed to save highscore: ' + err);
-				deferred.reject(new Error(err));
-			} else {
-				debug('Successfully inserted new highscore into collection', highscore);
-				var res = result.ops[0]
-				debug('returning', res)
-				deferred.resolve(res);
-			}
-		});
+    return deferred.promise
+  }
 
-		return deferred.promise;
-	};
+  Database.prototype.saveHighscore = function (highscore) {
+    var deferred = Q.defer()
 
-	return Database;
-})();
+    db.collection(HIGHSCORES).insert(highscore, function (err, result) {
+      if (err) {
+        debug('Failed to save highscore: ' + err)
+        deferred.reject(new Error(err))
+      } else {
+        debug('Successfully inserted new highscore into collection', highscore)
+        var res = result.ops[0]
+        debug('returning', res)
+        deferred.resolve(res)
+      }
+    })
+
+    return deferred.promise
+  }
+
+  return Database
+})()

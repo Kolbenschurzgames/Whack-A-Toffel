@@ -1,15 +1,16 @@
 {
   "name": "whack-a-toffel",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "Whack-A-Toffel Backend",
   "main": "src/main/index.js",
   "scripts": {
     "start": "DEBUG=toffel* node src/main/index.js",
     "test": "NODE_ENV=test DEBUG=toffel* mocha src/test",
-    "integration": "NODE_ENV=test DEBUG=toffel* mocha src/test/integration"
+    "integration": "NODE_ENV=test DEBUG=toffel* mocha src/test/integration",
+    "standard": "standard \"src/**/*.js\""
   },
   "engines": {
-    "node": "6.9.x"
+    "node": "7.x.x"
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,7 @@
     "mocha": "^2.5.3",
     "proxyquire": "^1.7.10",
     "sinon": "^1.17.7",
+    "standard": "^8.6.0",
     "supertest": "^1.2.0"
   }
 }
