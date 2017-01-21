@@ -1,36 +1,36 @@
 module.exports = (function () {
   'use strict'
 
-  var debug = require('debug')('toffel:server')
-  var validator = require('./validator.js')
+  const debug = require('debug')('toffel:server')
+  const validator = require('./validator.js')
 
-  var Database = require('./database.js')
-  var dbName = process.env.NODE_ENV === 'test' ? 'toffelTest' : 'toffel'
-  var db = new Database(dbName)
+  const Database = require('./database.js')
+  const dbName = process.env.NODE_ENV === 'test' ? 'toffelTest' : 'toffel'
+  const db = new Database(dbName)
 
-  var koa = require('koa')
-  var router = require('koa-router')()
-  var koaBody = require('koa-body')()
-  var app = koa()
+  const Koa = require('koa')
+  const router = require('koa-router')()
+  const koaBody = require('koa-body')()
+  const app = new Koa()
 
-  var serverPort = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
+  const serverPort = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
 
   app.use(router.routes())
 
-  router.get('/highscore', function* () {
-    this.body = yield db.getHighscores()
+  router.get('/highscore', async ctx => {
+    ctx.body = await db.getHighscores()
   })
 
-  router.post('/highscore', koaBody, function* () {
-    var highscore = this.request.body
+  router.post('/highscore', koaBody, async ctx => {
+    const highscore = ctx.request.body
 
     if (validator.isValidHighscore(highscore)) {
       debug('Received request to save highscore', highscore)
-      this.body = yield db.saveHighscore(highscore)
+      ctx.body = await db.saveHighscore(highscore)
     } else {
       debug('Received invalid highscore', highscore)
-      this.response.status = 400
-      this.body = 'Invalid highscore'
+      ctx.status = 400
+      ctx.body = 'Invalid highscore'
     }
   })
 

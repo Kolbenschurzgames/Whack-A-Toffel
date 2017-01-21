@@ -1,5 +1,5 @@
 module.exports = (function () {
-  var isValidHighscore = function (highscore) {
+  const isValidHighscore = function (highscore) {
     return typeof highscore === 'object' &&
       highscore !== null &&
       typeof highscore.name === 'string' &&
@@ -7,7 +7,7 @@ module.exports = (function () {
       isValidDate(highscore.timestamp)
   }
 
-  var isValidDate = function (d) {
+  const isValidDate = function (d) {
     return !isNaN(new Date(d).getTime())
   }
 

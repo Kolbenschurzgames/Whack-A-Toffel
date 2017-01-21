@@ -1,14 +1,13 @@
 module.exports = (function () {
   'use strict'
 
-  var db
-  var HIGHSCORES = 'highscores'
+  let db
+  const HIGHSCORES = 'highscores'
 
-  var debug = require('debug')('toffel:database')
-  var Q = require('q')
+  const debug = require('debug')('toffel:database')
 
-  var Database = function (dbName) {
-    var mongoDbUri
+  const Database = function (dbName) {
+    let mongoDbUri
 
     if (typeof dbName === 'string') {
       mongoDbUri = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/' + dbName
@@ -18,37 +17,32 @@ module.exports = (function () {
     }
   }
 
-  Database.prototype.getHighscores = function () {
-    var deferred = Q.defer()
-
-    db.collection(HIGHSCORES).find().toArray(function (err, result) {
-      if (err) {
-        debug('Failed to retrieve highscores: ' + err)
-        deferred.reject(new Error(err))
-      } else {
-        deferred.resolve(result)
-      }
+  Database.prototype.getHighscores = async function () {
+    return new Promise((resolve, reject) => {
+      db.collection(HIGHSCORES).find().toArray(function (err, result) {
+        if (err) {
+          debug('Failed to retrieve highscores: ' + err)
+          reject(new Error(err))
+        } else {
+          resolve(result)
+        }
+      })
     })
-
-    return deferred.promise
   }
 
-  Database.prototype.saveHighscore = function (highscore) {
-    var deferred = Q.defer()
-
-    db.collection(HIGHSCORES).insert(highscore, function (err, result) {
-      if (err) {
-        debug('Failed to save highscore: ' + err)
-        deferred.reject(new Error(err))
-      } else {
-        debug('Successfully inserted new highscore into collection', highscore)
-        var res = result.ops[0]
-        debug('returning', res)
-        deferred.resolve(res)
-      }
+  Database.prototype.saveHighscore = async function (highscore) {
+    return new Promise((resolve, reject) => {
+      db.collection(HIGHSCORES).insert(highscore, function (err, result) {
+        if (err) {
+          debug('Failed to save highscore: ' + err)
+          reject(new Error(err))
+        } else {
+          debug('Successfully inserted new highscore into collection', highscore)
+          const dbResult = result.ops[0]
+          resolve(dbResult)
+        }
+      })
     })
-
-    return deferred.promise
   }
 
   return Database
