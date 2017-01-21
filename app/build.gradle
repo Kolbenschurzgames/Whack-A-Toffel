@@ -58,7 +58,7 @@ android {
 }
 
 def PowerMockVersion = '1.6.4'
-def SupportVersion = '22.2.1'
+def SupportVersion = '25.1.0'
 def VolleyVersion = '1.0.0'
 def MockitoVersion = '1.10.19'
 def RobolectricVersion = '3.0'
