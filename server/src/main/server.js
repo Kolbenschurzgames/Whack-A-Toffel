@@ -15,6 +15,16 @@ module.exports = (function () {
 
   const serverPort = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
 
+  app.use(async (ctx, next) => {
+    try {
+      await next()
+    } catch (err) {
+      ctx.status = err.status || 500
+      ctx.body = err.message
+      ctx.app.emit('error', err, this)
+    }
+  })
+
   app.use(router.routes())
 
   router.get('/highscore', async ctx => {

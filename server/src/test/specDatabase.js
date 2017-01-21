@@ -1,25 +1,24 @@
 /* eslint-env mocha */
-
 'use strict'
 
-var expect = require('chai').expect
-var sinon = require('sinon')
-var Database = require('../main/database.js')
-var mongoskin = require('mongoskin')
-var testDbName = 'toffelTest'
-var db
+const expect = require('chai').expect
+const sinon = require('sinon')
+const Database = require('../main/database.js')
+const mongoskin = require('mongoskin')
+const testDbName = 'toffelTest'
+let db
 
 describe('database spec', function () {
-  var dbStub
-  var insertStub = sinon.stub()
-  var findToArrayStub = sinon.stub()
-  var mockCollection = {
+  let dbStub
+  const insertStub = sinon.stub()
+  const findToArrayStub = sinon.stub()
+  const mockCollection = {
     insert: insertStub,
     find: function () {
       return { toArray: findToArrayStub }
     }
   }
-  var collectionStub = sinon.stub().returns(mockCollection)
+  const collectionStub = sinon.stub().returns(mockCollection)
 
   before(function () {
     dbStub = sinon.stub(mongoskin, 'db')
@@ -34,12 +33,12 @@ describe('database spec', function () {
 
   describe('database constructor', function () {
     it('should throw an error if no database name is specified', function () {
-      var invalidConstructorCall = function () { Database() }
+      const invalidConstructorCall = function () { Database() }
       expect(invalidConstructorCall).to.throw(Error)
     })
 
     it('should not throw an error if a database name is specified', function () {
-      var validConstructorCall = function () { Database(testDbName) }
+      const validConstructorCall = function () { Database(testDbName) }
       expect(validConstructorCall).not.to.throw()
     })
 
@@ -57,15 +56,11 @@ describe('database spec', function () {
   })
 
   describe('saving a new highscore', function () {
-    var highscore
-
-    before(function () {
-      highscore = {
-        name: 'test',
-        score: 100,
-        timestamp: new Date()
-      }
-    })
+    const highscore = {
+      name: 'test',
+      score: 100,
+      timestamp: new Date()
+    }
 
     it('should try to insert the given highscore object into the highscores collection', function () {
       db.saveHighscore(highscore)
@@ -75,8 +70,8 @@ describe('database spec', function () {
     })
 
     describe('successful insert of a highscore', function () {
-      var result
-      var dbHighscore = {
+      let result
+      const dbHighscore = {
         name: 'test',
         score: 100,
         timestamp: 1433401883849,
@@ -100,11 +95,9 @@ describe('database spec', function () {
         insertStub.yields(null, result)
       })
 
-      it('should return a promise containing the result of the database operation', function (done) {
-        db.saveHighscore(highscore).then(function (val) {
-          expect(val).to.eql(dbHighscore)
-          done()
-        })
+      it('should return a promise containing the result of the database operation', async function () {
+        const val = await db.saveHighscore(highscore)
+        expect(val).to.eql(dbHighscore)
       })
 
       after(function () {
@@ -113,19 +106,24 @@ describe('database spec', function () {
     })
 
     describe('error during insert of a highscore', function () {
-      var error
+      let error
 
       before(function () {
         error = 'something went wrong'
         insertStub.yields(error)
       })
 
-      it('should return a rejected promise containing the error message', function (done) {
-        db.saveHighscore(highscore).fail(function (err) {
-          expect(err).to.be.an.instanceof(Error)
-          expect(err.message).to.equal(error)
-          done()
-        })
+      it('should return a rejected promise containing the error message', async function () {
+        let thrown
+
+        try {
+          await db.saveHighscore(highscore)
+        } catch (err) {
+          thrown = err
+        }
+
+        expect(thrown).to.be.an.instanceof(Error)
+        expect(thrown.message).to.equal(error)
       })
 
       after(function () {
@@ -136,21 +134,18 @@ describe('database spec', function () {
 
   describe('retrieving all highscores', function () {
     describe('succeeds', function () {
-      var highscoresResult
+      const highscoresResult = [
+        { name: 'test', score: 1000 },
+        { name: 'test2', score: 2000 }
+      ]
 
       before(function () {
-        highscoresResult = [
-          { name: 'test', score: 1000 },
-          { name: 'test2', score: 2000 }
-        ]
         findToArrayStub.yields(null, highscoresResult)
       })
 
-      it('should return a promise containing the result of the database operation', function (done) {
-        db.getHighscores().then(function (val) {
-          expect(val).to.equal(highscoresResult)
-          done()
-        })
+      it('should return a promise containing the result of the database operation', async function () {
+        const val = await db.getHighscores()
+        expect(val).to.equal(highscoresResult)
       })
 
       after(function () {
@@ -159,19 +154,23 @@ describe('database spec', function () {
     })
 
     describe('fails', function () {
-      var error
+      const error = 'failure'
 
       before(function () {
-        error = 'failure'
         findToArrayStub.yields(error)
       })
 
-      it('should return a rejected promise containing the error message', function (done) {
-        db.getHighscores().fail(function (err) {
-          expect(err).to.be.an.instanceof(Error)
-          expect(err.message).to.equal(error)
-          done()
-        })
+      it('should return a rejected promise containing the error message', async function () {
+        let thrown
+
+        try {
+          await db.getHighscores()
+        } catch (err) {
+          thrown = err
+        }
+
+        expect(thrown).to.be.an.instanceof(Error)
+        expect(thrown.message).to.equal(error)
       })
 
       after(function () {

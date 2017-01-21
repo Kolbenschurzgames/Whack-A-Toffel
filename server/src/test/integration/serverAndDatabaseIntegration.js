@@ -4,16 +4,16 @@
 // run with "npm run integration""
 
 if (process.env.NODE_ENV === 'test') {
-  var expect = require('chai').expect
-  var request = require('supertest')('http://localhost:3000')
-  var db
+  const expect = require('chai').expect
+  const request = require('supertest')('http://localhost:3000')
+  let db
 
   var emptyCollection = function (collectionName, callback) {
     db.collection(collectionName).remove({}, callback)
   }
 
   describe('integration test suite', function () {
-    var route, collection
+    let route, collection
 
     before(function () {
       db = require('mongoskin').db('mongodb://localhost:27017/toffelTest', { native_parser: true })
@@ -32,15 +32,11 @@ if (process.env.NODE_ENV === 'test') {
 
       describe('POST', function () {
         describe('valid data', function () {
-          var validHighscore
-
-          before(function () {
-            validHighscore = {
-              name: 'test',
-              score: 1000,
-              timestamp: new Date().getTime()
-            }
-          })
+          const validHighscore = {
+            name: 'test',
+            score: 1000,
+            timestamp: new Date().getTime()
+          }
 
           it('should return status code 200 and the database result in the response body', function (done) {
             request.post(route)
@@ -72,16 +68,14 @@ if (process.env.NODE_ENV === 'test') {
         })
 
         describe('invalid data', function () {
-          var invalidData
+          const invalidData = {
+            name: 'name',
+            score: 'notAScore',
+            timestamp: 'new Date().getTime()'
+          }
 
           before(function (done) {
             emptyCollection(collection, done)
-
-            invalidData = {
-              name: 'name',
-              score: 'notAScore',
-              timestamp: 'new Date().getTime()'
-            }
           })
 
           it('should return status code 400', function (done) {
@@ -105,20 +99,19 @@ if (process.env.NODE_ENV === 'test') {
       describe('GET', function () {
         describe('empty highscores collection', function () {
           it('should return status code 200 and an empty array in the response body', function (done) {
-            var emptyArray = []
+            const emptyArray = []
             request.get(route)
               .expect(200, emptyArray, done)
           })
         })
 
         describe('results from database', function () {
-          var highscores
+          const highscores = [
+            { name: 'test', score: 1000, timestamp: new Date().getTime() },
+            { name: 'test2', score: 2000, timestamp: new Date().getTime() }
+          ]
 
           before(function (done) {
-            highscores = [
-              { name: 'test', score: 1000, timestamp: new Date().getTime() },
-              { name: 'test2', score: 2000, timestamp: new Date().getTime() }
-            ]
             db.collection(collection).insert(highscores, done)
           })
 
@@ -129,14 +122,13 @@ if (process.env.NODE_ENV === 'test') {
           it('should return status code 200 and the database result in the response body', function (done) {
             request.get(route)
               .expect(200, function (err, result) {
-                var i
-                var body = result.body
-                var numHighscores = highscores.length
+                const body = result.body
+                const numHighscores = highscores.length
 
                 expect(err).to.not.exist
                 expect(body).to.be.instanceof(Array)
 
-                for (i = 0; i < numHighscores; i++) {
+                for (let i = 0; i < numHighscores; i++) {
                   expect(body[i]).to.have.property('name').that.equals(highscores[i].name)
                   expect(body[i]).to.have.property('score').that.equals(highscores[i].score)
                   expect(body[i]).to.have.property('timestamp').that.equals(highscores[i].timestamp)

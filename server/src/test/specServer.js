@@ -1,17 +1,15 @@
 /* eslint-env mocha */
-
 'use strict'
 
-var expect = require('chai').expect
-var sinon = require('sinon')
-var proxyquire = require('proxyquire')
-var Q = require('q')
-var request = require('supertest')('http://localhost:3000')
-var Database = require('../main/database.js')
-var validator = require('../main/validator.js')
+const expect = require('chai').expect
+const sinon = require('sinon')
+const proxyquire = require('proxyquire')
+const request = require('supertest')('http://localhost:3000')
+const Database = require('../main/database.js')
+const validator = require('../main/validator.js')
 
 describe('server spec', function () {
-  var dbMock,
+  let dbMock,
     route,
     isValidHighscoreStub
 
@@ -37,17 +35,14 @@ describe('server spec', function () {
 
     describe('POST', function () {
       describe('valid data', function () {
-        var dbResult,
-          validHighscore
+        const validHighscore = {
+          name: 'name',
+          score: 1000,
+          timestamp: new Date().getTime()
+        }
+        const dbResult = { '_id': 1, 'object': validHighscore }
 
         before(function () {
-          validHighscore = {
-            name: 'name',
-            score: 1000,
-            timestamp: new Date().getTime()
-          }
-
-          dbResult = { '_id': 1, 'object': validHighscore }
           dbMock.saveHighscore.returns(dbResult)
         })
 
@@ -69,15 +64,13 @@ describe('server spec', function () {
       })
 
       describe('invalid data', function () {
-        var invalidData
+        const invalidData = {
+          name: 'name',
+          score: 'notAScore',
+          timestamp: new Date().getTime()
+        }
 
         before(function () {
-          invalidData = {
-            name: 'name',
-            score: 'notAScore',
-            timestamp: new Date().getTime()
-          }
-
           isValidHighscoreStub.withArgs(invalidData).returns(false)
         })
 
@@ -100,14 +93,12 @@ describe('server spec', function () {
 
     describe('GET', function () {
       describe('successfully fetched data from database', function () {
-        var dbResult
+        const dbResult = [
+          { name: 'test', score: 1000 },
+          { name: 'test2', score: 2000 }
+        ]
 
         before(function () {
-          dbResult = [
-            { name: 'test', score: 1000 },
-            { name: 'test2', score: 2000 }
-          ]
-
           dbMock.getHighscores.returns(dbResult)
         })
 
@@ -127,13 +118,10 @@ describe('server spec', function () {
       })
 
       describe('error while fetching data from database', function () {
-        var rejectedPromise
+        const msg = "Can't do it"
 
         before(function () {
-          rejectedPromise = Q.fcall(function () {
-            throw new Error('Can\'t do it')
-          })
-          dbMock.getHighscores.returns(rejectedPromise)
+          dbMock.getHighscores.returns(Promise.reject(new Error(msg)))
         })
 
         after(function () {
@@ -142,7 +130,7 @@ describe('server spec', function () {
 
         it('should return status code 500 and the error message in the response body', function (done) {
           request.get(route)
-            .expect(500, done)
+            .expect(500, msg, done)
         })
 
         it('should have tried to retrieve the highscores from the database module', function () {

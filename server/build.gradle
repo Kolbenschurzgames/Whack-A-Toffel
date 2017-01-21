@@ -28,13 +28,12 @@ node {
 
 task test(type: NodeTask) {
     script = file('node_modules/mocha/bin/mocha')
-    args = ['src/test']
+    args = ['--harmony-async-await', 'src/test']
     environment = ['NODE_ENV': 'test', 'DEBUG': 'toffel*']
 }
 
 task integration(type: NodeTask) {
     script = file('node_modules/mocha/bin/mocha')
-    args = ['src/test/integration']
+    args = ['--harmony-async-await', 'src/test/integration']
     environment = ['NODE_ENV': 'test', 'DEBUG': 'toffel*']
 }
-

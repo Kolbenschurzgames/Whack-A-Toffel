@@ -1,8 +1,8 @@
 /* eslint-env mocha */
 'use strict'
 
-var expect = require('chai').expect
-var validator = require('../main/validator.js')
+const expect = require('chai').expect
+const validator = require('../main/validator.js')
 
 describe('validator spec', function () {
   describe('isValidDate', function () {
@@ -11,7 +11,7 @@ describe('validator spec', function () {
     })
 
     it('should return false for non-Date objects', function () {
-      var invalidObject = {
+      const invalidObject = {
         getTime: function () { }
       }
       expect(validator.isValidDate(invalidObject)).to.be.false
@@ -27,18 +27,14 @@ describe('validator spec', function () {
   })
 
   describe('isValidHighscore', function () {
-    var timestamp
-
-    before(function () {
-      timestamp = new Date().getTime()
-    })
+    const timestamp = new Date().getTime()
 
     it('should return false if no parameter is passed', function () {
       expect(validator.isValidHighscore()).to.be.false
     })
 
     it('should return false if the name property does not contain a string', function () {
-      var invalidName = {
+      const invalidName = {
         name: 123,
         score: 1000,
         timestamp: timestamp
@@ -48,7 +44,7 @@ describe('validator spec', function () {
     })
 
     it('should return false if the score property does not contain a number', function () {
-      var invalidName = {
+      const invalidName = {
         name: 'name',
         score: '1000',
         timestamp: timestamp
@@ -58,7 +54,7 @@ describe('validator spec', function () {
     })
 
     it('should return false if the timestamp property does not contain a valid date', function () {
-      var invalidName = {
+      const invalidName = {
         name: 'name',
         score: 1000,
         timestamp: 'random falseness'
@@ -68,7 +64,7 @@ describe('validator spec', function () {
     })
 
     it('should return true for valid highscore objects', function () {
-      var validHighscore = {
+      const validHighscore = {
         name: 'name',
         score: 1000,
         timestamp: timestamp
