@@ -5,7 +5,8 @@
   "main": "src/main/index.js",
   "scripts": {
     "start": "DEBUG=toffel* node src/main/index.js",
-    "test": "NODE_ENV=test DEBUG=toffel* mocha src/test"
+    "test": "NODE_ENV=test DEBUG=toffel* mocha src/test",
+    "integration": "NODE_ENV=test DEBUG=toffel* mocha src/test/integration"
   },
   "engines": {
     "node": "6.9.x"

@@ -51,12 +51,10 @@ if (process.env.NODE_ENV === 'test') {
                             expect(err).to.not.exist;
                             expect(result).to.exist;
                             body = result.body;
-                            expect(body).to.be.an.instanceof(Array);
-                            expect(body).to.have.length(1);
-                            expect(body[0]).to.have.property('name').that.equals(validHighscore.name);
-                            expect(body[0]).to.have.property('score').that.equals(validHighscore.score);
-                            expect(body[0]).to.have.property('timestamp').that.equals(validHighscore.timestamp);
-                            expect(body[0]).to.have.property('_id').that.is.a.string;
+                            expect(body).to.have.property('name').that.equals(validHighscore.name);
+                            expect(body).to.have.property('score').that.equals(validHighscore.score);
+                            expect(body).to.have.property('timestamp').that.equals(validHighscore.timestamp);
+                            expect(body).to.have.property('_id').that.is.a.string;
                             done(err, result);
                         });
                     });
