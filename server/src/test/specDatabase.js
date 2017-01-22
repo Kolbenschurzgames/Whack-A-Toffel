@@ -9,7 +9,7 @@ const testDbName = 'toffelTest'
 let db
 
 describe('database spec', function () {
-  let dbStub
+  const dbStub = sinon.stub(mongoskin, 'db')
   const insertStub = sinon.stub()
   const findToArrayStub = sinon.stub()
   const mockCollection = {
@@ -21,7 +21,6 @@ describe('database spec', function () {
   const collectionStub = sinon.stub().returns(mockCollection)
 
   before(function () {
-    dbStub = sinon.stub(mongoskin, 'db')
     dbStub.returns({
       collection: collectionStub
     })
@@ -33,12 +32,12 @@ describe('database spec', function () {
 
   describe('database constructor', function () {
     it('should throw an error if no database name is specified', function () {
-      const invalidConstructorCall = function () { Database() }
+      const invalidConstructorCall = function () { new Database() } // eslint-disable-line no-new
       expect(invalidConstructorCall).to.throw(Error)
     })
 
     it('should not throw an error if a database name is specified', function () {
-      const validConstructorCall = function () { Database(testDbName) }
+      const validConstructorCall = function () { new Database(testDbName) } // eslint-disable-line no-new
       expect(validConstructorCall).not.to.throw()
     })
 

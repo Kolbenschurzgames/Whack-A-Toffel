@@ -2,7 +2,7 @@ module.exports = (function () {
   'use strict'
 
   const debug = require('debug')('toffel:server')
-  const validator = require('./validator.js')
+  const Validator = require('./validator.js')
 
   const Database = require('./database.js')
   const dbName = process.env.NODE_ENV === 'test' ? 'toffelTest' : 'toffel'
@@ -34,7 +34,7 @@ module.exports = (function () {
   router.post('/highscore', koaBody, async ctx => {
     const highscore = ctx.request.body
 
-    if (validator.isValidHighscore(highscore)) {
+    if (Validator.isValidHighscore(highscore)) {
       debug('Received request to save highscore', highscore)
       ctx.body = await db.saveHighscore(highscore)
     } else {
@@ -44,7 +44,7 @@ module.exports = (function () {
     }
   })
 
-  app.listen(serverPort, function () {
+  app.listen(serverPort, () => {
     debug('Server listening on port ' + serverPort)
   })
 })()

@@ -1,27 +1,24 @@
-module.exports = (function () {
-  'use strict'
+'use strict'
 
-  let db
-  const HIGHSCORES = 'highscores'
+module.exports = class Database {
 
-  const debug = require('debug')('toffel:database')
-
-  const Database = function (dbName) {
-    let mongoDbUri
+  constructor (dbName) {
+    this.HIGHSCORES = 'highscores'
+    this.debug = require('debug')('toffel:database')
 
     if (typeof dbName === 'string') {
-      mongoDbUri = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/' + dbName
-      db = require('mongoskin').db(mongoDbUri, { native_parser: true })
+      const mongoDbUri = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/' + dbName
+      this.db = require('mongoskin').db(mongoDbUri, { native_parser: true })
     } else {
       throw new Error('Database name parameter missing')
     }
   }
 
-  Database.prototype.getHighscores = async function () {
+  async getHighscores () {
     return new Promise((resolve, reject) => {
-      db.collection(HIGHSCORES).find().toArray(function (err, result) {
+      this.db.collection(this.HIGHSCORES).find().toArray((err, result) => {
         if (err) {
-          debug('Failed to retrieve highscores: ' + err)
+          this.debug('Failed to retrieve highscores: ' + err)
           reject(new Error(err))
         } else {
           resolve(result)
@@ -30,20 +27,18 @@ module.exports = (function () {
     })
   }
 
-  Database.prototype.saveHighscore = async function (highscore) {
+  async saveHighscore (highscore) {
     return new Promise((resolve, reject) => {
-      db.collection(HIGHSCORES).insert(highscore, function (err, result) {
+      this.db.collection(this.HIGHSCORES).insert(highscore, (err, result) => {
         if (err) {
-          debug('Failed to save highscore: ' + err)
+          this.debug('Failed to save highscore: ' + err)
           reject(new Error(err))
         } else {
-          debug('Successfully inserted new highscore into collection', highscore)
+          this.debug('Successfully inserted new highscore into collection', highscore)
           const dbResult = result.ops[0]
           resolve(dbResult)
         }
       })
     })
   }
-
-  return Database
-})()
+}

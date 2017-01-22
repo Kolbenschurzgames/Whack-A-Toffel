@@ -4,9 +4,9 @@
   "description": "Whack-A-Toffel Backend",
   "main": "src/main/index.js",
   "scripts": {
-    "start": "DEBUG=toffel* node --harmony-async-await src/main/index.js",
-    "test": "NODE_ENV=test DEBUG=toffel* mocha --harmony-async-await src/test",
-    "integration": "NODE_ENV=test DEBUG=toffel* mocha --harmony-async-await src/test/integration",
+    "start": "DEBUG=toffel* node --harmony src/main/index.js",
+    "test": "NODE_ENV=test DEBUG=toffel* mocha --harmony src/test",
+    "integration": "NODE_ENV=test DEBUG=toffel* mocha --harmony src/test/integration",
     "standard": "standard \"src/**/*.js\""
   },
   "engines": {

@@ -1,18 +1,13 @@
-module.exports = (function () {
-  const isValidHighscore = function (highscore) {
+module.exports = class Validator {
+  static isValidHighscore (highscore) {
     return typeof highscore === 'object' &&
       highscore !== null &&
       typeof highscore.name === 'string' &&
       typeof highscore.score === 'number' &&
-      isValidDate(highscore.timestamp)
+      Validator.isValidDate(highscore.timestamp)
   }
 
-  const isValidDate = function (d) {
+  static isValidDate (d) {
     return !isNaN(new Date(d).getTime())
   }
-
-  return {
-    isValidHighscore: isValidHighscore,
-    isValidDate: isValidDate
-  }
-})()
+}
