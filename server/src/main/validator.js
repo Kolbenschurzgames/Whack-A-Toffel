@@ -1,19 +1,13 @@
-module.exports = (function() {
+module.exports = class Validator {
+  static isValidHighscore (highscore) {
+    return typeof highscore === 'object' &&
+      highscore !== null &&
+      typeof highscore.name === 'string' &&
+      typeof highscore.score === 'number' &&
+      Validator.isValidDate(highscore.timestamp)
+  }
 
-    var isValidHighscore = function(highscore) {
-        return typeof highscore === 'object' &&
-            highscore !== null &&
-            typeof highscore.name === 'string' &&
-            typeof highscore.score === 'number' &&
-            isValidDate(highscore.timestamp);
-    };
-
-    var isValidDate = function(d) {
-        return !isNaN(new Date(d).getTime());
-    };
-
-    return {
-        isValidHighscore: isValidHighscore,
-        isValidDate: isValidDate
-    };
-})();
+  static isValidDate (d) {
+    return !isNaN(new Date(d).getTime())
+  }
+}

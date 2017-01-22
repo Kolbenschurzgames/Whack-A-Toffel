@@ -1,55 +1,44 @@
-module.exports = (function() {
-	'use strict';
+'use strict'
 
-	var db;
-	var HIGHSCORES = 'highscores';
+module.exports = class Database {
 
-	var debug = require('debug')('toffel:database');
-	var Q = require('q');
-	
-	var Database = function(dbName) {
-		var mongoDbUri;
-		
-		if (typeof dbName === 'string') {
-			mongoDbUri = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/' + dbName;
-			db = require('mongoskin').db(mongoDbUri, {native_parser: true});
-		} else {
-			throw new Error('Database name parameter missing');
-		}
-	};
+  constructor (dbName) {
+    this.HIGHSCORES = 'highscores'
+    this.debug = require('debug')('toffel:database')
 
-	Database.prototype.getHighscores = function() {
-		var deferred = Q.defer();
+    if (typeof dbName === 'string') {
+      const mongoDbUri = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/' + dbName
+      this.db = require('mongoskin').db(mongoDbUri, { native_parser: true })
+    } else {
+      throw new Error('Database name parameter missing')
+    }
+  }
 
-		db.collection(HIGHSCORES).find().toArray(function(err, result) {
-			if (err) {
-				debug('Failed to retrieve highscores: ' + err);
-				deferred.reject(new Error(err));
-			} else {
-				deferred.resolve(result);
-			}
-		});
+  async getHighscores () {
+    return new Promise((resolve, reject) => {
+      this.db.collection(this.HIGHSCORES).find().toArray((err, result) => {
+        if (err) {
+          this.debug('Failed to retrieve highscores: ' + err)
+          reject(new Error(err))
+        } else {
+          resolve(result)
+        }
+      })
+    })
+  }
 
-		return deferred.promise;
-	};
-
-	Database.prototype.saveHighscore = function(highscore) {
-		var deferred = Q.defer();
-
-		db.collection(HIGHSCORES).insert(highscore, function(err, result) {
-		    if (err) {
-				debug('Failed to save highscore: ' + err);
-				deferred.reject(new Error(err));
-			} else {
-				debug('Successfully inserted new highscore into collection', highscore);
-				var res = result.ops[0]
-				debug('returning', res)
-				deferred.resolve(res);
-			}
-		});
-
-		return deferred.promise;
-	};
-
-	return Database;
-})();
+  async saveHighscore (highscore) {
+    return new Promise((resolve, reject) => {
+      this.db.collection(this.HIGHSCORES).insert(highscore, (err, result) => {
+        if (err) {
+          this.debug('Failed to save highscore: ' + err)
+          reject(new Error(err))
+        } else {
+          this.debug('Successfully inserted new highscore into collection', highscore)
+          const dbResult = result.ops[0]
+          resolve(dbResult)
+        }
+      })
+    })
+  }
+}

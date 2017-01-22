@@ -13,7 +13,7 @@ apply plugin: 'com.moowork.node'
 
 node {
     // Version of node to use.
-    version = '6.9.4'
+    version = '7.4.0'
 
     // Base URL for fetching node distributions (change if you have a mirror).
     distBaseUrl = 'http://nodejs.org/dist'
@@ -28,13 +28,12 @@ node {
 
 task test(type: NodeTask) {
     script = file('node_modules/mocha/bin/mocha')
-    args = ['src/test']
+    args = ['--harmony', 'src/test']
     environment = ['NODE_ENV': 'test', 'DEBUG': 'toffel*']
 }
 
 task integration(type: NodeTask) {
     script = file('node_modules/mocha/bin/mocha')
-    args = ['src/test/integration']
+    args = ['--harmony', 'src/test/integration']
     environment = ['NODE_ENV': 'test', 'DEBUG': 'toffel*']
 }
-

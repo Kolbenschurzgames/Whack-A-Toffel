@@ -1,41 +1,50 @@
-module.exports = (function() {
-    'use strict';
+module.exports = (function () {
+  'use strict'
 
-    var debug = require('debug')('toffel:server');
-    var validator = require('./validator.js');
+  const debug = require('debug')('toffel:server')
+  const Validator = require('./validator.js')
 
-    var Database = require('./database.js');
-    var dbName = process.env.NODE_ENV === 'test' ? 'toffelTest' : 'toffel';
-    var db = new Database(dbName);
+  const Database = require('./database.js')
+  const dbName = process.env.NODE_ENV === 'test' ? 'toffelTest' : 'toffel'
+  const db = new Database(dbName)
 
-    var koa = require('koa');
-    var router = require('koa-router')();
-    var koaBody = require('koa-body')();
-    var app = koa();
+  const Koa = require('koa')
+  const router = require('koa-router')()
+  const koaBody = require('koa-body')()
+  const app = new Koa()
 
-    var serverPort = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+  const serverPort = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
 
-    app.use(router.routes());
+  app.use(async (ctx, next) => {
+    try {
+      await next()
+    } catch (err) {
+      ctx.status = err.status || 500
+      ctx.body = err.message
+      ctx.app.emit('error', err, this)
+    }
+  })
 
-	router.get('/highscore', function *() {
-		this.body = yield db.getHighscores();
-	});
+  app.use(router.routes())
 
-    router.post('/highscore', koaBody, function *() {
-        var highscore = this.request.body;
+  router.get('/highscore', async ctx => {
+    ctx.body = await db.getHighscores()
+  })
 
-        if (validator.isValidHighscore(highscore)) {
-            debug('Received request to save highscore', highscore);
-            this.body = yield db.saveHighscore(highscore);
-        } else {
-            debug('Received invalid highscore', highscore);
-            this.response.status = 400;
-            this.body = 'Invalid highscore';
-        }
-    });
+  router.post('/highscore', koaBody, async ctx => {
+    const highscore = ctx.request.body
 
-    app.listen(serverPort, function() {
-        debug('Server listening on port ' + serverPort);
-    });
+    if (Validator.isValidHighscore(highscore)) {
+      debug('Received request to save highscore', highscore)
+      ctx.body = await db.saveHighscore(highscore)
+    } else {
+      debug('Received invalid highscore', highscore)
+      ctx.status = 400
+      ctx.body = 'Invalid highscore'
+    }
+  })
 
-})();
+  app.listen(serverPort, () => {
+    debug('Server listening on port ' + serverPort)
+  })
+})()
